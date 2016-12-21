@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  devise_for :employees
   get 'pages/home'
 
   get 'pages/status'
