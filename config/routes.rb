@@ -9,6 +9,11 @@ Rails.application.routes.draw do
 
   get 'pages/livemap'
 
+  get 'orders/create'
+  get 'orders/index'
+
+  get 'payments/index'
+
   root 'pages#home'
 
   resources :products, only: [:index, :show]
@@ -16,8 +21,8 @@ Rails.application.routes.draw do
   resources :categories, only: [:index, :show]
 
   resources :clients, only: [:index, :show, :create] do
-  	resources :order, only: [:index, :show, :create] do
-      resources :payments, only: [:index, :show, :create]
+  	resources :order, only: [:show] do
+      resources :payments, only: [:show, :create]
     end
   end
 

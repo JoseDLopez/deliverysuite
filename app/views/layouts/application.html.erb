@@ -9,9 +9,15 @@
   </head>
 
   <body>
-    <%= notice %>
-    <%= alert %>
-    <%= render 'layouts/navbar' %>
-    <%= yield %>
+    <div class="container">
+      <%= notice %>
+      <%= alert %>
+      <div class="row">
+        <div class="col-md-12">
+          <%= render 'layouts/navbar' %>
+        </div>
+      </div>
+      <%= yield %>
+    </div>
   </body>
 </html>
