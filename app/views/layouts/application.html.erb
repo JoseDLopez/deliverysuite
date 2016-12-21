@@ -20,12 +20,14 @@
 
       <div class="row">
         <div class="col-md-12">
-          <%= render 'layouts/navbar' %>
+          <% if employee_signed_in? %>
+            <%= render 'layouts/navbar' %>  
+          <% end %>
         </div>
       </div>
 
       <%= yield %>
-      
+
     </div>
   </body>
 </html>
