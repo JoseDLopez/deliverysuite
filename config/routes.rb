@@ -4,25 +4,20 @@ Rails.application.routes.draw do
   devise_for :employees
 
   get 'pages/home'
-
   get 'pages/status'
-
   get 'pages/livemap'
-
-  get 'orders/create'
-  get 'orders/index'
-
-  get 'payments/index'
-
   root 'pages#home'
+
+  resources :orders, only: [:create, :new, :index]
+  resources :payments, only: [:index]
 
   resources :products, only: [:index, :show]
   resources :zones, only: [:index, :show]
   resources :categories, only: [:index, :show]
 
-  resources :clients, only: [:index, :show, :create] do
+  resources :clients, only: [:index, :show, :create, :new] do
   	resources :order, only: [:show] do
-      resources :payments, only: [:show, :create]
+      resources :payments, only: [:show, :create, :new]
     end
   end
 
