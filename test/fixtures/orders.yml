@@ -1,0 +1,11 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  total: 1
+  client: one
+  zone: one
+
+two:
+  total: 1
+  client: two
+  zone: two

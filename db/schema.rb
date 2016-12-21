@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20161220234516) do
+ActiveRecord::Schema.define(version: 20161221001609) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -20,6 +20,36 @@ ActiveRecord::Schema.define(version: 20161220234516) do
     t.string   "description"
     t.datetime "created_at",  null: false
     t.datetime "updated_at",  null: false
+  end
+
+  create_table "clients", force: :cascade do |t|
+    t.string   "name"
+    t.string   "address"
+    t.string   "email"
+    t.string   "phone"
+    t.string   "latitude"
+    t.string   "longitude"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "order_products", force: :cascade do |t|
+    t.integer  "order_id"
+    t.integer  "product_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["order_id"], name: "index_order_products_on_order_id", using: :btree
+    t.index ["product_id"], name: "index_order_products_on_product_id", using: :btree
+  end
+
+  create_table "orders", force: :cascade do |t|
+    t.integer  "total"
+    t.integer  "client_id"
+    t.integer  "zone_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["client_id"], name: "index_orders_on_client_id", using: :btree
+    t.index ["zone_id"], name: "index_orders_on_zone_id", using: :btree
   end
 
   create_table "product_categories", force: :cascade do |t|
@@ -50,6 +80,10 @@ ActiveRecord::Schema.define(version: 20161220234516) do
     t.datetime "updated_at",  null: false
   end
 
+  add_foreign_key "order_products", "orders"
+  add_foreign_key "order_products", "products"
+  add_foreign_key "orders", "clients"
+  add_foreign_key "orders", "zones"
   add_foreign_key "product_categories", "categories"
   add_foreign_key "product_categories", "products"
 end
