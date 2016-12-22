@@ -53,3 +53,4 @@ gem 'railroady', group: :development
 gem 'activeadmin', github: 'activeadmin'
 gem 'inherited_resources', github: 'activeadmin/inherited_resources'
 gem 'active_skin'
+gem 'active_admin_datetimepicker'

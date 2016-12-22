@@ -22,7 +22,7 @@ ActiveAdmin.register Employee do
 		column :position
 		column :phone
 		column :email
-		column :updated_at
+		column :created_at
 		actions
 	end
 
@@ -32,7 +32,7 @@ ActiveAdmin.register Employee do
 			input :lastname
 			input :rut
 			input :email
-			input :birthday
+			input :birthday, as: :date_time_picker, datepicker_options: { min_date: "1920-1-1",        max_date: "-15Y" }
 			input :position
 			input :phone
 			input :emergencyphone
@@ -53,5 +53,6 @@ ActiveAdmin.register Employee do
 	filter :name
 	# filter :id
 	filter :position, as: :select
+	filter :created_at, as: :date_time_range
 
 end
