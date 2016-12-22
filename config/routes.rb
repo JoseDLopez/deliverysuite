@@ -1,7 +1,7 @@
 Rails.application.routes.draw do
   devise_for :admin_users, ActiveAdmin::Devise.config
   ActiveAdmin.routes(self)
-  devise_for :employees
+  devise_for :employees, :skip => [:registrations] 
 
   get 'pages/home'
   get 'pages/status'
