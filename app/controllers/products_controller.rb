@@ -1,4 +1,5 @@
 class ProductsController < ApplicationController
+	before_action :authenticate_employee!, except: [:home, :status]
   def index
   end
 

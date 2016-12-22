@@ -2,6 +2,10 @@ Rails.application.routes.draw do
   devise_for :admin_users, ActiveAdmin::Devise.config
   ActiveAdmin.routes(self)
   devise_for :employees, :skip => [:registrations] 
+   as :employee do
+    get 'employees/edit' => 'devise/registrations#edit', :as => 'edit_employee_registration'
+    patch'employees/:id' => 'devise/registrations#update', :as => 'employee_registration'
+  end
 
   get 'pages/home'
   get 'pages/status'
