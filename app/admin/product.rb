@@ -4,6 +4,7 @@ ActiveAdmin.register Product do
 # https://github.com/activeadmin/activeadmin/blob/master/docs/2-resource-customization.md#setting-up-strong-parameters
 #
 # permit_params :list, :of, :attributes, :on, :model
+	permit_params :name, :description, category_ids:[]
 #
 # or
 #
@@ -12,6 +13,15 @@ ActiveAdmin.register Product do
 #   permitted << :other if params[:action] == 'create' && current_user.admin?
 #   permitted
 # end
+
+	form do |f|
+		inputs "Add a new category" do
+			input :name
+			input :description
+			input :category_ids, as: :select, collection: Category.all, multiple: true
+		end
+		actions
+	end
 
 
 end
