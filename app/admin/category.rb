@@ -23,5 +23,10 @@ index do
 	actions
 end
 
+filter :products
+filter :name
+filter :description
+filter :created_at
+
 
 end
