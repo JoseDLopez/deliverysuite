@@ -8,6 +8,7 @@ class Employee < ApplicationRecord
 	has_many :orders, through: :order_employees
 
 	validates :rut, rut: true
+	validates :name, :lastname, :phone, :position, presence: true
 	validates_uniqueness_of :rut
 
 end
