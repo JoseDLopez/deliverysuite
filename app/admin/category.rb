@@ -13,5 +13,15 @@ ActiveAdmin.register Category do
 #   permitted
 # end
 
+index do
+	selectable_column
+	column :name
+	column :description
+	column 'Cantidad de Productos' do |cat|
+      cat.products.count
+    end
+	actions
+end
+
 
 end
