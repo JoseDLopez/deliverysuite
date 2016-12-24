@@ -21,7 +21,7 @@ ActiveAdmin.register Product do
 			input :description
 			input :price
 			input :time
-			input :picture
+			input :picture, as: :file
 			# input :category_ids, as: :select, collection: Category.all, multiple: true
 			input :categories, as: :check_boxes, collection: Category.all
 		end
@@ -33,7 +33,12 @@ ActiveAdmin.register Product do
 			table_for product do
 				column :name
 				column :description
-				column :picture
+				column :picture do
+				# image_tag product.picture, size: "300x200"
+					link_to "#{product.picture}" do
+						image_tag product.picture, size: "300x200"
+					end
+				end
 			end
 		end
 
@@ -54,7 +59,9 @@ ActiveAdmin.register Product do
 			row :price
 			row :time
 			row :description
-			row :picture
+			row :picture do
+				image_tag product.picture, size: "70x50"
+			end
 		end
 	end
 
