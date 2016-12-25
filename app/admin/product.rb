@@ -71,6 +71,24 @@ ActiveAdmin.register Product do
 	filter :price
 	filter :created_at
 
+	index do |product|
+		selectable_column
+		column :id
+		column :name
+		column :description
+		column :time
+		column :price
+		column :created_at
+		actions
+	end
+
+	index as: :grid do |product|
+		link_to "#{product.picture}" do
+			image_tag product.picture, size: "100x80"
+		end
+	# link_to image_tag(product.picture), admin_product_path(product)
+	end
+
 end
 
 
