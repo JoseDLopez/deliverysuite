@@ -13,5 +13,17 @@ ActiveAdmin.register Zone do
 #   permitted
 # end
 
+	index do |zone|
+		selectable_column
+		column :id
+		column :name
+		column :price	
+		column :description
+		column :created_at
+		actions
+	end
+	filter :name
+	filter :price
+	filter :created_at
 
 end
