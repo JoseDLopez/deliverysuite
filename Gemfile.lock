@@ -245,6 +245,7 @@ GEM
       trollop
     globalid (0.3.7)
       activesupport (>= 4.1.0)
+    gmaps4rails (2.1.2)
     has_scope (0.7.0)
       actionpack (>= 4.1, < 5.1)
       activesupport (>= 4.1, < 5.1)
@@ -393,6 +394,7 @@ DEPENDENCIES
   dotenv-rails
   fog
   geocode
+  gmaps4rails
   inherited_resources!
   jbuilder (~> 2.5)
   jquery-rails
