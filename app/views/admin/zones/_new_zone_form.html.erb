@@ -1,0 +1,15 @@
+<!-- active_admin_form_for zone do |f|
+  inputs :name, :description
+  actions
+end -->
+
+<%= semantic_form_for [:admin, @zone] do |f| %>
+  <%= f.input :name%>
+
+	<%= f.inputs "Area en el Mapa" do %>
+		<%= yield :scripts %>
+		<%= f.input :dots %>
+	<% end %>
+
+  <%= f.actions %>
+<% end %>
