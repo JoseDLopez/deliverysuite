@@ -1,2 +1,11 @@
 <h1>Pages#livemap</h1>
 <p>Find me in app/views/pages/livemap.html.erb</p>
+
+<div style='width: 800px;'>
+  <div id="basic_map" style='width: 800px; height: 400px;'></div>
+</div>
+
+<script>
+	handler = Gmaps.build('Google');
+	handler.buildMap({ internal: {id: 'basic_map' }});
+</script>

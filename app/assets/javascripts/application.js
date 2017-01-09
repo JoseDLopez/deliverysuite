@@ -15,5 +15,7 @@
 //= require turbolinks
 //= require bootstrap
 //= require underscore
+//= infobox_packed
+//= markerclusterer
 //= require gmaps/google
 //= require_tree .
