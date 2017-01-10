@@ -4,7 +4,7 @@ ActiveAdmin.register Client do
 # https://github.com/activeadmin/activeadmin/blob/master/docs/2-resource-customization.md#setting-up-strong-parameters
 #
 # permit_params :list, :of, :attributes, :on, :model
-permit_params :name, :address, :email, :phone, :latitude, :longitude
+permit_params :name, :address, :email, :phone, :latitude, :longitude, :lastname, :rut
 #
 # or
 #
@@ -17,8 +17,10 @@ permit_params :name, :address, :email, :phone, :latitude, :longitude
 	index do
 		selectable_column
 		column :name
+		column :lastname
 		column :address
 		column :phone
+		column :rut
 		column :email
 		column :latitude
 		column :longitude
@@ -29,8 +31,10 @@ permit_params :name, :address, :email, :phone, :latitude, :longitude
 	form do |f|
 		inputs "Add a new Client" do
 			input :name
+			input :lastname
 			input :email
 			input :phone
+			input :rut
 			input :address
 		end
 		actions
@@ -38,6 +42,8 @@ permit_params :name, :address, :email, :phone, :latitude, :longitude
 
 	filter :email
 	filter :name
+	filter :lastname
+	filter :rut
 	filter :phone
 	filter :created_at
 
