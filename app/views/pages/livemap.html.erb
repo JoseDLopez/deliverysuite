@@ -1,11 +1,40 @@
-<h1>Pages#livemap</h1>
-<p>Find me in app/views/pages/livemap.html.erb</p>
-
-<div style='width: 800px;'>
-  <div id="basic_map" style='width: 800px; height: 400px;'></div>
+<div class="row">
+	<div class="col-md-12">
+		<h1>Pages#livemap</h1>
+		<p>Find me in app/views/pages/livemap.html.erb</p>
+		  <div id="basic_map" style='height: 400px;'></div>
+	</div>			
 </div>
 
 <script>
-	handler = Gmaps.build('Google');
-	handler.buildMap({ internal: {id: 'basic_map' }});
+	document.addEventListener("turbolinks:load",function(){
+
+	if ($("#basic_map").length > 0){
+
+		$.getScript("//maps.google.com/maps/api/js?key=AIzaSyCp5ZLMmxEH6dtxWB8Ni20RWLMZIDuthsE").success(function(){
+
+			$.getScript("//cdn.rawgit.com/mahnunchik/markerclustererplus/master/dist/markerclusterer.min.js").success(function(){
+
+				$.getScript("//cdn.rawgit.com/printercu/google-maps-utility-library-v3-read-only/master/infobox/src/infobox_packed.js").success(function(){
+
+					handler = Gmaps.build('Google');
+					handler.buildMap({ provider: {
+						center: new google.maps.LatLng(-33.453703,-70.633799),
+						zoom: 14
+					}, internal: {id: 'basic_map'}},
+					function(){
+					    markers = handler.addMarkers(<%= raw @hash.to_json %>);
+					    console.log(markers);
+					    handler.bounds.extendWith(markers);
+					    handler.fitMapToBounds();
+					    console.log("Hola");
+				  	});
+
+				});
+
+			});
+
+		});
+	}
+});
 </script>
