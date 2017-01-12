@@ -28,23 +28,23 @@ ActiveAdmin.register Employee do
 
 	form do |f|
 		inputs "Add a new employee" do
-			input :name
-			input :lastname
-			input :rut
-			input :email
-			input :birthday, as: :date_time_picker
-			input :position
-			input :phone
-			input :emergencyphone
-			input :afp
-			input :ensurance
-			input :genre
-			input :bank
-			input :account
-			input :accounttype
-			input :bikeplate
-			input :bikemodel
-			input :password
+			input :name, :label => "Nombre" 
+			input :lastname, :label => "Apellido" 
+			input :rut, :label => "RUT" 
+			input :email, :label => "Correo Electrónico" 
+			input :birthday, as: :date_time_picker, :label => "Fecha de Nacimiento" 
+			input :position, :label => "Cargo" 
+			input :phone, :label => "Número celular" 
+			input :emergencyphone, :label => "Número de Emergencia" 
+			input :afp, :label => "AFP" 
+			input :ensurance, :label => "Salud" 
+			input :genre, :label => "Género" 
+			input :bank, :label => "Banco" 
+			input :account, :label => "Número de cuenta" 
+			input :accounttype, :label => "Tipo de Cuenta" 
+			input :bikeplate, :label => "Patente Moto" 
+			input :bikemodel, :label => "Modelo Moto" 
+			input :password, :label => "Contraseña" 
 		end
 		actions
 	end

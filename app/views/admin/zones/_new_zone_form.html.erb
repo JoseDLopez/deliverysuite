@@ -6,7 +6,11 @@
 end -->
 
 <%= semantic_form_for [:admin, @zone] do |f| %>
-  <%= f.input :name%>
+  <%= f.inputs "Básico" do %>
+  	<%= f.input :name, :label => "Nombre" %>
+  	<%= f.input :price, :label => "Monto" %>
+  	<%= f.input :description, :label => "Descripción" %>
+  <% end %>
   <br>
 
 	<%= f.inputs "Area en el Mapa" do %>

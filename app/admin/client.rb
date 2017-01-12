@@ -28,17 +28,7 @@ permit_params :name, :address, :email, :phone, :latitude, :longitude, :lastname,
 		actions
 	end
 
-	form do |f|
-		inputs "Add a new Client" do
-			input :name
-			input :lastname
-			input :email
-			input :phone
-			input :rut
-			input :address
-		end
-		actions
-	end
+	form partial: 'new_client_form'
 
 	filter :email
 	filter :name
@@ -51,7 +41,6 @@ permit_params :name, :address, :email, :phone, :latitude, :longitude, :lastname,
 
 	show do
   	panel "Ubicación del Cliente en el Mapa:" do
-	  	# renders app/views/admin/posts/_some_partial.html.erb
 	  	render 'show_client_map', {latitude: client.latitude, longitude: client.longitude, name: client.name}
 	    
   	end

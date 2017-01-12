@@ -17,13 +17,13 @@ ActiveAdmin.register Product do
 
 	form do |f|
 		inputs "Agrega un nuevo producto" do
-			input :name
-			input :description
-			input :price
-			input :time
-			input :picture, as: :file
+			input :name, :label => "Nombre"
+			input :description, :label => "Descripción"
+			input :price, :label => "Precio"
+			input :time, :label => "Tiempo de Cocción"
+			input :picture, as: :file, :label => "Imagen representativa"
 			# input :category_ids, as: :select, collection: Category.all, multiple: true
-			input :categories, as: :check_boxes, collection: Category.all
+			input :categories, as: :check_boxes, collection: Category.all, :label => "Categoría"
 		end
 		actions
 	end
@@ -31,8 +31,8 @@ ActiveAdmin.register Product do
 	show do
 		panel "Tabla del Producto" do
 			table_for product do
-				column :name
-				column :description
+				column :name, :label => "Nombre"
+				column :description, :label => "Descripción"
 				column :picture do
 				# image_tag product.picture, size: "300x200"
 					link_to "#{product.picture}" do
@@ -65,11 +65,11 @@ ActiveAdmin.register Product do
 		end
 	end
 
-	filter :name
-	filter :categories
-	filter :time
-	filter :price
-	filter :created_at
+	filter :name, :label => "Nombre"
+	filter :categories, :label => "Categorías"
+	filter :time, :label => "Tiempo de Cocción"
+	filter :price, :label => "Ṕrecio"
+	filter :created_at, :label => "Fecha de Creación"
 
 	index do |product|
 		selectable_column
