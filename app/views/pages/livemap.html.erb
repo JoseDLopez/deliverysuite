@@ -6,6 +6,7 @@
 	</div>			
 </div>
 
+
 <script>
 	document.addEventListener("turbolinks:load",function(){
 
@@ -23,11 +24,25 @@
 						zoom: 14
 					}, internal: {id: 'basic_map'}},
 					function(){
+
+						var polygons = handler.addPolygons(
+						[
+						  [
+						    {lat:  48, lng: -3.5}, { lat: 51, lng: -0.5},
+						    {lat:  48, lng:  2.5}, { lat: 51, lng:  5.5},
+						    {lat:  48, lng:  8.5}, { lat: 42, lng:  2.5},
+						  ]
+						],
+							{ strokeColor: '#FF0000'}
+						);
 					    markers = handler.addMarkers(<%= raw @hash.to_json %>);
-					    console.log(markers);
+
+
+					    handler.bounds.extendWith(polygons);
 					    handler.bounds.extendWith(markers);
+
+
 					    handler.fitMapToBounds();
-					    console.log("Hola");
 				  	});
 
 				});
