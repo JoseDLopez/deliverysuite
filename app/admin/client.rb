@@ -47,4 +47,28 @@ permit_params :name, :address, :email, :phone, :latitude, :longitude, :lastname,
 	filter :phone
 	filter :created_at
 
+
+
+	show do
+  	panel "Ubicación del Cliente en el Mapa:" do
+	  	# renders app/views/admin/posts/_some_partial.html.erb
+	  	render 'show_client_map', {latitude: client.latitude, longitude: client.longitude, name: client.name}
+	    
+  	end
+
+  end
+
+  sidebar "Details", only: :show do
+    attributes_table_for client do
+      row :name
+      row :lastname
+      row :email
+      row :phone
+      row :address
+      row :latitude
+      row :longitude
+      row :created_at
+    end
+  end
+
 end
