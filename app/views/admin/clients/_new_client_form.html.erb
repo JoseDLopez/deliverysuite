@@ -95,8 +95,8 @@ $( document ).ready(function() {
 
 			geocoder.geocode({'location':latilong},function(results, status){
 				if (status === 'OK'){
-					if (results[1]){
-						$("#client_address").val(results[1].formatted_address);
+					if (results[0]){
+						$("#client_address").val(results[0].formatted_address);
 					}else{
 						window.alert("No se encuentran direcciones con esas coordenadas");
 					}
