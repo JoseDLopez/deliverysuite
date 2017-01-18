@@ -4,7 +4,7 @@ ActiveAdmin.register Zone do
 # https://github.com/activeadmin/activeadmin/blob/master/docs/2-resource-customization.md#setting-up-strong-parameters
 #
 # permit_params :list, :of, :attributes, :on, :model
-	permit_params :name, :description, :price
+	permit_params :name, :description, :price, :dots
 # or
 #
 # permit_params do
@@ -42,21 +42,6 @@ ActiveAdmin.register Zone do
       row :created_at
     end
   end
-
-  #Editing form for new zone:
-
-	# form do |f|
-	# 	inputs 'Details' do
-	# 		input :name
-	# 		input :price
-	# 	end
-	# 	panel 'Area de Cobertura' do
-			
-	# 	end
-	# 	inputs 'Content', :description
-	# 	para "Press cancel to return to the list without saving."
-	# 	actions
-	# end
 
 	form partial: 'new_zone_form'
 

@@ -10,6 +10,7 @@ end -->
   	<%= f.input :name, :label => "Nombre" %>
   	<%= f.input :price, :label => "Monto" %>
   	<%= f.input :description, :label => "Descripción" %>
+  	<%= f.input	:dots, :label => "Coordenadas de la Zona" %>
   <% end %>
   <br>
 
@@ -24,14 +25,42 @@ end -->
 
 <script>
 $( document ).ready(function() {
+
     console.log( "ready!" );
+    $("#zone_dots").prop('disabled', true);
+    var puntos = $("#zone_dots").val();
+
     handler = Gmaps.build('Google');
-	handler.buildMap({
-		internal: {id: 'basic_map'},
-		provider: {
-			center: new google.maps.LatLng(-33.453703,-70.633799),
-			zoom: 13
+	mapita = handler.buildMap({
+			internal: {id: 'basic_map'},
+			provider: {
+				center: new google.maps.LatLng(-33.453703,-70.633799),
+				zoom: 13
+			}
+		}, function(){
+			var poligono = [];
+			// Aqui van todas las funciones del mapa
+			if (puntos.length > 0){
+				alert("no existe ninguna zona demarcada");
+				drawZoneArea(puntos);
+			}
+			drawZoneArea(puntos);
+
+			function drawZoneArea(coords){
+				var triangleCoords = [
+					{"lat": 25.774, "lng": -80.190},
+					{"lat": 18.466, "lng": -66.118},
+					{"lat": 32.321, "lng": -64.757},
+					{"lat": 25.774, "lng": -80.190}
+				];
+				console.log(triangleCoords);
+				poligono = handler.addPolygons(triangleCoords);
+				console.log(poligono);
+				handler.bounds.extendWith(poligono);
+			}
+
+
 		}
-	});
+	);
 });
 </script>
