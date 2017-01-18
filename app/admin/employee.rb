@@ -55,4 +55,42 @@ ActiveAdmin.register Employee do
 	filter :position, as: :select
 	filter :created_at
 
+
+	show do
+		panel "Datos básicos" do
+			table_for employee do
+				column :name, :label => "Nombre"
+				column :lastname, :label => "Apellido"
+				column :rut, :label => "RUT"
+				column :email, :label => "Correo Electrónico"
+				column :birthday, as: :date_time_picker, :label => "Fecha de Nacimiento"
+				column :position, :label => "Cargo" 
+				column :phone, :label => "Número celular" 
+			end
+		end
+
+		panel "Datos varios" do
+			table_for employee do
+				column :emergencyphone, :label => "Número de Emergencia" 
+				column :genre, :label => "Género" 
+				column :bikeplate, :label => "Patente Moto" 
+				column :bikemodel, :label => "Modelo Moto" 
+			end
+		end
+		active_admin_comments
+	end
+
+	sidebar "Details", only: :show do
+		attributes_table_for employee do
+			row :afp, :label => "AFP" 
+			row :ensurance, :label => "Salud" 
+			row :genre, :label => "Género" 
+			row :bank, :label => "Banco" 
+			row :account, :label => "Número de cuenta"
+			row :accounttype, :label => "Tipo de Cuenta" 
+		end
+	end
+
+
+
 end
