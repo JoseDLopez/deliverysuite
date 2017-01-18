@@ -23,7 +23,6 @@
 
   <%= f.actions %>
 <% end %>
-<%= @client.longitude %>
 
 
 
@@ -31,7 +30,6 @@
 <script>
 
 $( document ).ready(function() {
-	marcador =[];
     console.log( "ready!" );
     lat = "<%= @client.latitude %>";
     lon = "<%= @client.longitude %>";
@@ -49,6 +47,9 @@ $( document ).ready(function() {
 			zoom: 16
 		}
 	},function(){
+		contmarcador = 0;
+		var markers=[];
+
 		if (lat !="-33.453703"){
 			setClientMarker(lat,lon);
 		}
@@ -65,26 +66,46 @@ $( document ).ready(function() {
 
 
 		function setClientMarker(lat,lon){
-			if (marcador.length != 0){
-			marcador.visible(false);	
+			if (contmarcador > 0){
+				console.log("YA existia un marcador");
+				console.log(markers);
+				console.log(contmarcador);
+
+				for (var i = 0; i < markers.length; i++){
+					markers[i].setMap(null);
+				}
+				handler.removeMarkers(markers);
+				markers = [];
 			}
-			
 			markers = handler.addMarkers([
 				{
 					"lat": lat,
 					"lng": lon,
-					"infowindow": "<%= @client.name %>"
+					"infowindow": $("#client_name").val()
 				}
 			]);
-			marcador = markers;
+			contmarcador +=1;
 			var latilong = new google.maps.LatLng(lat,lon);
 			mapita.getServiceObject().panTo(latilong);
+			updateClientAddress(latilong);
 		}
 
+		function updateClientAddress(latilong){
+			var geocoder = new google.maps.Geocoder;
 
+			geocoder.geocode({'location':latilong},function(results, status){
+				if (status === 'OK'){
+					if (results[1]){
+						$("#client_address").val(results[1].formatted_address);
+					}else{
+						window.alert("No se encuentran direcciones con esas coordenadas");
+					}
+				}else{
+					window.alert('Geocoder failed due to: ' + status);
+				}
+			});
 
-
-
+		}
 
 	}
 	);
