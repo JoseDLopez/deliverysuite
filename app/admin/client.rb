@@ -4,7 +4,7 @@ ActiveAdmin.register Client do
 # https://github.com/activeadmin/activeadmin/blob/master/docs/2-resource-customization.md#setting-up-strong-parameters
 #
 # permit_params :list, :of, :attributes, :on, :model
-permit_params :name, :address, :email, :phone, :latitude, :longitude, :lastname, :rut
+permit_params :name, :address, :email, :phone, :latitude, :longitude, :lastname, :rut, :remark
 #
 # or
 #
@@ -54,6 +54,7 @@ permit_params :name, :address, :email, :phone, :latitude, :longitude, :lastname,
       row :email
       row :phone
       row :address
+      row :remark
       row :latitude
       row :longitude
       row :created_at
