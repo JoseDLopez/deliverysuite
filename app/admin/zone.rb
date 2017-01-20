@@ -29,7 +29,7 @@ ActiveAdmin.register Zone do
   show do
   	panel "Ubicación en el Mapa:" do
 	  	# renders app/views/admin/posts/_some_partial.html.erb
-	    render 'show_zone_map'
+	    render 'show_zone_map', {puntos: zone.dots}
   	end
 
   end
@@ -40,6 +40,7 @@ ActiveAdmin.register Zone do
       row :price
       row :description
       row :created_at
+      row :dots
     end
   end
 

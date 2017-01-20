@@ -25,42 +25,149 @@ end -->
 
 <script>
 $( document ).ready(function() {
-
     console.log( "ready!" );
-    $("#zone_dots").prop('disabled', true);
+    // $("#zone_dots").prop('disabled', true);
     var puntos = $("#zone_dots").val();
+    if (puntos == ""){
+    	puntos =[];
+    }else{
+		var arraypuntos = [];
 
-    handler = Gmaps.build('Google');
-	mapita = handler.buildMap({
-			internal: {id: 'basic_map'},
-			provider: {
-				center: new google.maps.LatLng(-33.453703,-70.633799),
-				zoom: 13
-			}
-		}, function(){
-			var poligono = [];
-			// Aqui van todas las funciones del mapa
-			if (puntos.length > 0){
-				alert("no existe ninguna zona demarcada");
-				drawZoneArea(puntos);
-			}
-			drawZoneArea(puntos);
+		var corarr =[];
+		var cadena ="";
+		var estado ="";
 
-			function drawZoneArea(coords){
-				var triangleCoords = [
-					{"lat": 25.774, "lng": -80.190},
-					{"lat": 18.466, "lng": -66.118},
-					{"lat": 32.321, "lng": -64.757},
-					{"lat": 25.774, "lng": -80.190}
-				];
-				console.log(triangleCoords);
-				poligono = handler.addPolygons(triangleCoords);
-				console.log(poligono);
-				handler.bounds.extendWith(poligono);
+		var olat = 0;
+		var olon = 0;
+
+		var objeto ={};
+		console.log(puntos);
+
+		for (var i = 0; i < puntos.length; i++){
+			var guardar = false;
+			if (puntos[i] == "("){
+				estado = "iniciolatitude";
+				guardar = false;
 			}
 
+			if (puntos[i] == ","){
+				estado = "iniciolongitude";
+				if (cadena.length > 0){	
+					corarr.push(cadena);
+				}
+				cadena="";
+				guardar = false;
+			}
 
+			if (puntos[i] == ")"){
+				estado = "fin";
+				corarr.push(cadena);
+				
+				cadena="";
+				guardar = false;
+
+				olat = parseFloat(corarr[0]);
+				olon = parseFloat(corarr[1]);
+				corarr = [];
+
+				// objeto = new google.maps.LatLng(olat,olon); 
+				objeto = {lat: olat, lng: olon};
+				arraypuntos.push(objeto);
+				objeto={};
+				estado=""
+
+			}
+
+			if ((puntos[i] != "(") & (puntos[i] != ",") & (puntos[i] != ")") & (puntos[i] != " ")){
+				guardar = true;
+			}
+
+			if (guardar == true){
+				cadena += puntos[i];
+			}
 		}
-	);
+
+		puntos = arraypuntos;
+
+
+
+
+
+
+
+
+
+
+
+
+
+    }
+
+
+
+
+
+    initMap();
+    var drawzone = false;
+
+	function initMap() {
+        var mapita = new google.maps.Map(document.getElementById('basic_map'), {
+          zoom: 13,
+          center: {lat: -33.453703, lng: -70.633799}
+        });
+
+		var poligono = new google.maps.Polygon({
+			paths: puntos,
+			strokeColor: '#FF0000',
+			strokeOpacity: 0.8,
+			strokeWeight: 2,
+			fillColor: '#FF0000',
+			fillOpacity: 0.35
+		});
+		poligono.setMap(mapita);
+
+
+		mapita.addListener('dblclick', function() {
+			if (drawzone == true){
+				drawPolygonOnMap(puntos);
+				drawzone = false;
+				alert("Se cierra el area");
+			}else{
+				if (confirm('¿Deseas dibujar una zona?')) {
+				    drawzone = true;
+				    puntos = [];
+				    drawPolygonOnMap(puntos);
+
+				}
+			}
+		});
+
+		mapita.addListener('rightclick', function(event) {
+			if (drawzone == true) {
+			    puntos.push(event.latLng);
+			    console.log(puntos);
+			    drawPolygonOnMap(puntos);
+			    $("#zone_dots").val(puntos);
+			}
+		});
+
+
+		function drawPolygonOnMap(pointsarray){
+			// Construct the polygon.
+			poligono.setMap(null);
+			poligono = [];
+	        poligono = new google.maps.Polygon({
+	          paths: pointsarray,
+	          strokeColor: '#FF0000',
+	          strokeOpacity: 0.8,
+	          strokeWeight: 2,
+	          fillColor: '#FF0000',
+	          fillOpacity: 0.35
+	        });
+	        poligono.setMap(mapita);
+		}
+
+    }
+
 });
 </script>

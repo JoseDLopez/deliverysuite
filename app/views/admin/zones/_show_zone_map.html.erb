@@ -5,15 +5,84 @@
 <script>
 $( document ).ready(function() {
     console.log( "ready!" );
-    handler = Gmaps.build('Google');
-	handler.buildMap({
-		internal: {id: 'basic_map'},
-		provider: {
-			center: new google.maps.LatLng(-33.453703,-70.633799),
-			zoom: 13
-		}
-	});
+ 	initMap();
+	function initMap() {
+		var mapita = new google.maps.Map(document.getElementById('basic_map'), {
+		zoom: 13,
+		center: {lat: -33.453703, lng: -70.633799}
+		});
+		console.log(<%= puntos %>);
+		puntosleidos = "<%= puntos %>";
+		var arraypuntos = [];
 
+		var corarr =[];
+		var cadena ="";
+		var estado ="";
+
+		var olat = 0;
+		var olon = 0;
+
+		var objeto ={};
+		console.log(puntosleidos);
+
+		for (var i = 0; i < puntosleidos.length; i++){
+			var guardar = false;
+			if (puntosleidos[i] == "("){
+				estado = "iniciolatitude";
+				guardar = false;
+			}
+
+			if (puntosleidos[i] == ","){
+				estado = "iniciolongitude";
+				if (cadena.length > 0){	
+					corarr.push(cadena);
+				}
+				cadena="";
+				guardar = false;
+			}
+
+			if (puntosleidos[i] == ")"){
+				estado = "fin";
+				corarr.push(cadena);
+				
+				cadena="";
+				guardar = false;
+
+				olat = parseFloat(corarr[0]);
+				olon = parseFloat(corarr[1]);
+				corarr = [];
+
+				// objeto = new google.maps.LatLng(olat,olon); 
+				objeto = {lat: olat, lng: olon};
+				arraypuntos.push(objeto);
+				objeto={};
+				estado=""
+
+			}
+
+			if ((puntosleidos[i] != "(") & (puntosleidos[i] != ",") & (puntosleidos[i] != ")") & (puntosleidos[i] != " ")){
+				guardar = true;
+			}
+
+			if (guardar == true){
+				cadena += puntosleidos[i];
+			}
+		}
+
+		console.log(arraypuntos);
+
+
+		var poligono = new google.maps.Polygon({
+			paths: arraypuntos,
+			strokeColor: '#FF0000',
+			strokeOpacity: 0.8,
+			strokeWeight: 2,
+			fillColor: '#FF0000',
+			fillOpacity: 0.35
+		});
+		poligono.setMap(mapita);
+
+	}
 
 
 
