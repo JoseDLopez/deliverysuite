@@ -34,8 +34,7 @@
 							zonas = <%= raw @zones.to_json %>;
 							zonas.forEach(function(zona){
 								var todraw = getPointsArray(zona.dots);
-								drawPolygon(todraw, zona.name, zona.price);
-
+								drawPolygon(todraw, zona.name, zona.price, zona.id);
 							})
 						}
 						function getPointsArray(recibido){
@@ -101,7 +100,8 @@
 							return puntos;
 						}
 
-						function drawPolygon(obj,name,price){
+						function drawPolygon(obj,name,price,zoneid){
+							
 					        poligono = new google.maps.Polygon({
 					          paths: obj,
 					          strokeColor: '#FF0000',
@@ -113,7 +113,7 @@
 					        poligono.setMap(mapita);
 							infoWindow = new google.maps.InfoWindow;
 							poligono.addListener('click', function(e){
-								infoWindow.setContent('<b>Nombre: '+ name +'</b><br>'+'Precio: '+price+'<br>');
+								infoWindow.setContent('<b>Nombre: '+ name +'</b><br>'+'Precio: '+price+'</br><br>'+'Ver: '+ '<a href="/zones/'+zoneid+'">Enlace</a>' + '</br>');
 								infoWindow.setPosition(e.latLng);
 
 								infoWindow.open(mapita);
