@@ -15,9 +15,9 @@ Rails.application.routes.draw do
   resources :orders, only: [:create, :new, :index]
   resources :payments, only: [:index]
 
-  resources :products, only: [:index, :show]
-  resources :zones, only: [:index, :show]
-  resources :categories, only: [:index, :show]
+  resources :products, only: [:index, :show, :create, :new]
+  resources :zones, only: [:index, :show, :create, :new]
+  resources :categories, only: [:index, :show, :create, :new]
 
   resources :clients, only: [:index, :show, :create, :new] do
   	resources :order, only: [:show] do
