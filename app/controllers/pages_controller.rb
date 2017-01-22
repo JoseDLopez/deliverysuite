@@ -8,6 +8,8 @@ class PagesController < ApplicationController
 
   def livemap
 	@customers = Client.all
+	@zones = Zone.all
+	@orders = Order.all
 	@hash = Gmaps4rails.build_markers(@customers) do |customer, marker|
 		marker.lat customer.latitude
 		marker.lng customer.longitude

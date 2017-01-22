@@ -17,33 +17,127 @@
 			$.getScript("//cdn.rawgit.com/mahnunchik/markerclustererplus/master/dist/markerclusterer.min.js").success(function(){
 
 				$.getScript("//cdn.rawgit.com/printercu/google-maps-utility-library-v3-read-only/master/infobox/src/infobox_packed.js").success(function(){
+					initMap();
+					
 
-					handler = Gmaps.build('Google');
-					handler.buildMap({ provider: {
-						center: new google.maps.LatLng(-33.453703,-70.633799),
-						zoom: 14
-					}, internal: {id: 'basic_map'}},
-					function(){
+					function initMap(){
+						var infoWindow;
 
-						var polygons = handler.addPolygons(
-						[
-						  [
-						    {lat:  48, lng: -3.5}, { lat: 51, lng: -0.5},
-						    {lat:  48, lng:  2.5}, { lat: 51, lng:  5.5},
-						    {lat:  48, lng:  8.5}, { lat: 42, lng:  2.5},
-						  ]
-						],
-							{ strokeColor: '#FF0000'}
-						);
-					    markers = handler.addMarkers(<%= raw @hash.to_json %>);
+						var mapita = new google.maps.Map(document.getElementById('basic_map'), {
+							zoom: 13,
+							center: {lat: -33.453703, lng: -70.633799}
+						});
+						drawZones();
+						// drawOrders();
+
+						function drawZones(){
+							zonas = <%= raw @zones.to_json %>;
+							zonas.forEach(function(zona){
+								var todraw = getPointsArray(zona.dots);
+								drawPolygon(todraw, zona.name, zona.price);
+
+							})
+						}
+						function getPointsArray(recibido){
+							var arraypuntos = [];
+							var puntos = recibido;
+							if (puntos == null){
+								return;
+							}
+							var corarr =[];
+							var cadena ="";
+							var estado ="";
+
+							var olat = 0;
+							var olon = 0;
+
+							var objeto ={};
+
+							for (var i = 0; i < puntos.length; i++){
+								var guardar = false;
+								if (puntos[i] == "("){
+									estado = "iniciolatitude";
+									guardar = false;
+								}
+
+								if (puntos[i] == ","){
+									estado = "iniciolongitude";
+									if (cadena.length > 0){	
+										corarr.push(cadena);
+									}
+									cadena="";
+									guardar = false;
+								}
+
+								if (puntos[i] == ")"){
+									estado = "fin";
+									corarr.push(cadena);
+									
+									cadena="";
+									guardar = false;
+
+									olat = parseFloat(corarr[0]);
+									olon = parseFloat(corarr[1]);
+									corarr = [];
+
+									// objeto = new google.maps.LatLng(olat,olon); 
+									objeto = {lat: olat, lng: olon};
+									arraypuntos.push(objeto);
+									objeto={};
+									estado=""
+
+								}
+
+								if ((puntos[i] != "(") & (puntos[i] != ",") & (puntos[i] != ")") & (puntos[i] != " ")){
+									guardar = true;
+								}
+
+								if (guardar == true){
+									cadena += puntos[i];
+								}
+							}
+
+							puntos = arraypuntos;
+							return puntos;
+						}
+
+						function drawPolygon(obj,name,price){
+					        poligono = new google.maps.Polygon({
+					          paths: obj,
+					          strokeColor: '#FF0000',
+					          strokeOpacity: 0.8,
+					          strokeWeight: 2,
+					          fillColor: '#FF0000',
+					          fillOpacity: 0.35
+					        });
+					        poligono.setMap(mapita);
+							infoWindow = new google.maps.InfoWindow;
+							poligono.addListener('click', function(e){
+								infoWindow.setContent('<b>Nombre: '+ name +'</b><br>'+'Precio: '+price+'<br>');
+								infoWindow.setPosition(e.latLng);
+
+								infoWindow.open(mapita);
+							});
+
+							
+						}
+
+						// function showInfo(event){
+							
+						// }
+
+						// google.maps.event.addListener(poligono, 'mouseover', function(e) {
+						// poligono.infoWindow
+						// });
+
+					}
 
 
-					    handler.bounds.extendWith(polygons);
-					    handler.bounds.extendWith(markers);
 
 
-					    handler.fitMapToBounds();
-				  	});
+
+
+
 
 				});
 
