@@ -15,10 +15,11 @@ class ProductsController < ApplicationController
 
   def new
   	@product = Product.new
+  	@categories = Category.all
   end
 
   def product_params
-  	params.require(:product).permit(:name,:description,:time,:price)
+  	params.require(:product).permit(:name,:description,:time,:price,:picture)
   end
 
 
