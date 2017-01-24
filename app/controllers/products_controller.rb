@@ -7,7 +7,10 @@ class ProductsController < ApplicationController
   end
 
   def create
+	category_ids = product_params["category_ids"].delete_if{ |x| x.empty? }
+	@categories = Category.find(category_ids)
   	@product = Product.new(product_params)
+  	# @product.categories << @categories
   	if @product.save
   		redirect_to products_path
   	end
@@ -19,7 +22,7 @@ class ProductsController < ApplicationController
   end
 
   def product_params
-  	params.require(:product).permit(:name,:description,:time,:price,:picture)
+  	params.require(:product).permit(:name,:description,:time,:price,:picture,:category_ids => [])
   end
 
 
