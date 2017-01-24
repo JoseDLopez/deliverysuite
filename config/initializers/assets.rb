@@ -11,8 +11,8 @@ Rails.application.config.assets.version = '1.0'
 # Rails.application.config.assets.precompile += %w( search.js )
 # Rails.application.config.assets.precompile += %w( livemap.js.erb )
 
-config.assets.paths << Rails.root.join('app', 'assets', 'fonts')
-config.assets.precompile += %w( .svg .eot .woff .ttf)
+# config.assets.paths << Rails.root.join('app', 'assets', 'fonts')
+# config.assets.precompile += %w( .svg .eot .woff .ttf)
 
 
 # Rails.application.config.assets.precompile += ['glyphicons-halflings-regular.woff2', 'glyphicons-halflings-regular.woff', 'glyphicons-halflings-regular.eot','glyphicons-halflings-regular.svg','glyphicons-halflings-regular.ttf']
