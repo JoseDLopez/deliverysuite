@@ -1,0 +1,7 @@
+<tr>
+	<th scope="row" class="text-center"><%= product.id %></th>
+	<td class="text-center"><%= product.name %></td>
+	<td class="text-center"><%= product.description %></td>
+	<td class="text-center"><%= product.price %></td>
+	<td class="text-center"><%= link_to 'Quitar', remove_category_path(product_id: product.id, category_id: @category.id), :class => "btn btn-warning" %></td>
+</tr>

@@ -26,15 +26,9 @@
 				<th class="text-center">Acción</th>
 				</tr>
 			</thead>
-			<tbody>
-				<% @products.order(:id).each do |p| %>
-					<tr>
-					<th scope="row" class="text-center"><%= p.id %></th>
-					<td class="text-center"><%= p.name %></td>
-					<td class="text-center"><%= p.description %></td>
-					<td class="text-center"><%= p.price %></td>
-					<td class="text-center"><button class="btn btn-warning">Quitar</button><%= link_to 'borrar', remove_category_path(product_id: p.id, category_id: @category.id) %></td>
-				</tr>
+			<tbody id="products_table_body">
+				<% @products.order(:id).each do |product| %>
+					<%= render product %>
 				<% end %>
 			</tbody>
 		</table>
