@@ -1,2 +1,43 @@
-<h1>Categories#show</h1>
-<p>Find me in app/views/categories/show.html.erb</p>
+<div class="row">
+	<div class="col-md-4 col-md-offset-4">
+		<h1 class="text-center"><%= @category.name %></h1>
+		<p class="text-center"><%= @category.description %></p>
+		<div class="text-center">
+			<%= link_to "Editar", edit_category_path, :class => "btn btn-info", :method => "get" %>
+			<%= link_to "Eliminar", category_path, :class => "btn btn-danger", :method => "delete" %>
+		</div>
+		
+	</div>
+</div>
+
+<div class="row">
+	<div class="col-md-8 col-md-offset-2">
+		<h3>Listado de Productos</h3>
+		<button class="btn btn-success">Agregar Producto</button>
+
+
+		<table class="table table-hover">
+			<thead>
+				<tr>
+				<th class="text-center">#</th>
+				<th class="text-center">Nombre</th>
+				<th class="text-center">Descripción</th>
+				<th class="text-center">Precio</th>
+				<th class="text-center">Acción</th>
+				</tr>
+			</thead>
+			<tbody>
+				<% @products.order(:id).each do |p| %>
+					<tr>
+					<th scope="row" class="text-center"><%= p.id %></th>
+					<td class="text-center"><%= p.name %></td>
+					<td class="text-center"><%= p.description %></td>
+					<td class="text-center"><%= p.price %></td>
+					<td class="text-center"><button class="btn btn-warning">Quitar</button><%= link_to 'borrar', remove_category_path(product_id: p.id, category_id: @category.id) %></td>
+				</tr>
+				<% end %>
+			</tbody>
+		</table>
+
+	</div>
+</div>

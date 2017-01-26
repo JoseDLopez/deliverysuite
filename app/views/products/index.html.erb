@@ -5,11 +5,15 @@
 	height: 200px;
 }
 </style>
+<div class="row">
+	<div class="col-md-4 col-md-offset-4">
+		<h1 class="text-center">PRODUCTOS</h1>
+	</div>
+</div>
 
 <div class="row">
 	<div class="col-md-12">
-		<h1>Listado de Productos</h1>
-		<% @products.each do |product| %>
+		<% @products.order(:id).each do |product| %>
 			<div class="col-md-4 text-center">
 				<img class="img-circle img-responsive img-center" src="<%= product.picture %>">
 				<h3><%= product.name %></h3>

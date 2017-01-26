@@ -11,13 +11,15 @@ Rails.application.routes.draw do
   get 'pages/status'
   get 'pages/livemap'
   root 'pages#home'
+  get '/products/remove_category' => 'products#remove_category', :as => :remove_category
 
   resources :orders, only: [:create, :new, :index]
   resources :payments, only: [:index]
 
-  resources :products, only: [:index, :show, :create, :new]
-  resources :zones, only: [:index, :show, :create, :new]
-  resources :categories, only: [:index, :show, :create, :new]
+  resources :products
+  resources :categories
+  resources :zones
+  
 
   resources :clients, only: [:index, :show, :create, :new] do
   	resources :order, only: [:show] do
