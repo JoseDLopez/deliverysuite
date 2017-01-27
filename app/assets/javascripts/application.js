@@ -14,9 +14,8 @@
 //= require jquery_ujs
 //= require turbolinks
 //= require bootstrap
+//= require retina
 //= require underscore
-//= require gmaps/google
-//= infobox_packed
-//= markerclusterer
+//= require ie10-viewport-bug-workaround
 
 //= require_tree .

@@ -1,2 +1,175 @@
-<h1>Zones#index</h1>
-<p>Find me in app/views/zones/index.html.erb</p>
+<div class="container">
+	<div class="row">
+		<div class="col-md-4 col-md-offset-4">
+			<h1 class="text-center">ZONAS</h1>
+		</div>
+	</div>
+
+	<div class="row">
+		<div class="col-md">
+			<div id="basic_map" style='height: 300px;'></div>
+		</div>	
+	</div>
+
+	<div class="row">
+		<div class="col-md-10 col-md-offset-1">
+			<table class="table table-hover">
+				<thead>
+					<tr>
+						<th class="text-center">#</th>
+						<th class="text-center">Nombre</th>
+						<th class="text-center">Descripción</th>
+						<th class="text-center">Precio</th>
+						<th class="text-center">Pedidos Activos</th>
+						<th class="text-center">Acción</th>
+					</tr>
+				</thead>
+				<tbody>
+					<% @zones.order(:id).each do |z| %>
+						<tr>
+						<th scope="row" class="text-center"><%= z.id %></th>
+						<td class="text-center"><%= z.name %></td>
+						<td class="text-center"><%= z.description %></td>
+						<td class="text-center"><%= z.price %></td>
+						<td class="text-center"><%= z.orders.count %></td>
+						<td class="text-center"><%= link_to "Ver", zone_path(z), :class => "btn btn-success", :method => "get" %> | <%= link_to "Editar", edit_zone_path(z), :class => "btn btn-info", :method => "get" %> | <%= link_to "Eliminar", zone_path(z), :class => "btn btn-danger", :method => "delete" %></td>
+					</tr>
+					<% end %>
+				</tbody>
+			</table>
+		</div>
+	</div>
+	
+
+
+
+
+</div>
+
+<script>
+	document.addEventListener("turbolinks:load",function(){
+
+	if ($("#basic_map").length > 0){
+
+		$.getScript("//maps.google.com/maps/api/js?key=AIzaSyCp5ZLMmxEH6dtxWB8Ni20RWLMZIDuthsE").success(function(){
+
+			$.getScript("//cdn.rawgit.com/mahnunchik/markerclustererplus/master/dist/markerclusterer.min.js").success(function(){
+
+				$.getScript("//cdn.rawgit.com/printercu/google-maps-utility-library-v3-read-only/master/infobox/src/infobox_packed.js").success(function(){
+					initMap();
+					
+
+					function initMap(){
+						var infoWindow;
+
+						var mapita = new google.maps.Map(document.getElementById('basic_map'), {
+							zoom: 13,
+							center: {lat: -33.453703, lng: -70.633799}
+						});
+						drawZones();
+						// drawOrders();
+
+						function drawZones(){
+							zonas = <%= raw @zones.to_json %>;
+							zonas.forEach(function(zona){
+								var todraw = getPointsArray(zona.dots);
+								drawPolygon(todraw, zona.name, zona.price, zona.id);
+							})
+						}
+						function getPointsArray(recibido){
+							var arraypuntos = [];
+							var puntos = recibido;
+							if (puntos == null){
+								return;
+							}
+							var corarr =[];
+							var cadena ="";
+							var estado ="";
+
+							var olat = 0;
+							var olon = 0;
+
+							var objeto ={};
+
+							for (var i = 0; i < puntos.length; i++){
+								var guardar = false;
+								if (puntos[i] == "("){
+									estado = "iniciolatitude";
+									guardar = false;
+								}
+
+								if (puntos[i] == ","){
+									estado = "iniciolongitude";
+									if (cadena.length > 0){	
+										corarr.push(cadena);
+									}
+									cadena="";
+									guardar = false;
+								}
+
+								if (puntos[i] == ")"){
+									estado = "fin";
+									corarr.push(cadena);
+									
+									cadena="";
+									guardar = false;
+
+									olat = parseFloat(corarr[0]);
+									olon = parseFloat(corarr[1]);
+									corarr = [];
+
+									// objeto = new google.maps.LatLng(olat,olon); 
+									objeto = {lat: olat, lng: olon};
+									arraypuntos.push(objeto);
+									objeto={};
+									estado=""
+
+								}
+
+								if ((puntos[i] != "(") & (puntos[i] != ",") & (puntos[i] != ")") & (puntos[i] != " ")){
+									guardar = true;
+								}
+
+								if (guardar == true){
+									cadena += puntos[i];
+								}
+							}
+
+							puntos = arraypuntos;
+							return puntos;
+						}
+						function drawPolygon(obj,name,price,zoneid){
+					        poligono = new google.maps.Polygon({
+					          paths: obj,
+					          strokeColor: '#FF0000',
+					          strokeOpacity: 0.8,
+					          strokeWeight: 2,
+					          fillColor: '#FF0000',
+					          fillOpacity: 0.35
+					        });
+					        poligono.setMap(mapita);
+							infoWindow = new google.maps.InfoWindow;
+							poligono.addListener('click', function(e){
+								infoWindow.setContent('<b>Nombre: '+ name +'</b><br>'+'Precio: '+price+'</br><br>'+'Ver: '+ '<a href="/zones/'+zoneid+'">Enlace</a>' + '</br>');
+								infoWindow.setPosition(e.latLng);
+
+								infoWindow.open(mapita);
+							});
+						}
+					}
+
+
+
+
+
+
+
+
+				});
+
+			});
+
+		});
+	}
+});
+</script>

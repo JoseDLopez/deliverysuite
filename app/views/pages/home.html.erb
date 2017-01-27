@@ -1,3 +1,20 @@
-<h1>Pages#home</h1>
-<p>Find me in app/views/pages/home.html.erb</p>
-
+<div id="h">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-8 col-md-offset-2 centered">
+        <h1>Bienvenido<br/>Siéntete libre de saber donde esta tu pedido.</h1>
+        <div class="mtb">
+          <form role="form" action="register.php" method="post" enctype="plain"> 
+            <input type="email" name="email" class="subscribe-input" placeholder="Introduce tu numero telefónico..." required>
+            <button class='btn btn-conf btn-green' type="submit">Donde está mi pedido?</button>
+          </form>
+        </div><!--/mt-->
+		<% if employee_signed_in? %>
+		<h6><%= link_to "Live Map", pages_livemap_path %></h6>
+		<% else %>
+		<h6><%= link_to "Iniciar Sesión", new_employee_session_path %></h6>
+		<% end %>
+      </div>
+    </div><!--/row-->
+  </div><!--/container-->
+</div><!-- /H -->
