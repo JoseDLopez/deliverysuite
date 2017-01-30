@@ -31,13 +31,24 @@
               <li><a href="<%= new_product_path %>"><span class="glyphicon glyphicon-glass" aria-hidden="true"></span>Nuevo producto</a></li>
               <li><a href="<%= products_path %>"><span class="glyphicon glyphicon-cutlery" aria-hidden="true"></span>Todos los productos</a></li>
               <li role="separator" class="divider"></li>
-              <li><a href="<%= new_zone_path %>"><span class="glyphicon glyphicon-screenshot" aria-hidden="true"></span>Nueva zona</a></li>
-              <li><a href="<%= zones_path %>"><span class="glyphicon glyphicon-fullscreen" aria-hidden="true"></span>Todas las zonas</a></li>
-              <li role="separator" class="divider"></li>
               <li><a href="<%= new_category_path %>"><span class="glyphicon glyphicon-pushpin" aria-hidden="true"></span>Nueva categoría</a></li>
               <li><a href="<%= categories_path %>"><span class="glyphicon glyphicon-paperclip" aria-hidden="true"></span>Todas las categorías</a></li>
             </ul>
         </li>
+
+        <li class="dropdown">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><span class="glyphicon glyphicon-flag" aria-hidden="true"></span>Zonas<span class="caret"></span></a>
+            <ul class="dropdown-menu">
+<!--               <li><a href="<%= new_zone_path %>"><span class="glyphicon glyphicon-screenshot" aria-hidden="true"></span>Nueva zona</a></li> -->
+              <li><a href="<%= zones_path %>"><span class="glyphicon glyphicon-fullscreen" aria-hidden="true"></span>Todas las zonas</a></li>
+            </ul>
+        </li>
+
+<!--         <li class="dropdown">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><span class="glyphicon glyphicon-paperclip" aria-hidden="true"></span>Reportes<span class="caret"></span></a>
+        </li> -->
+
+
       </ul>
       <ul class="nav navbar-nav navbar-right">
         <li class="dropdown">

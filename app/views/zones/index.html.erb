@@ -32,7 +32,7 @@
 						<td class="text-center"><%= z.description %></td>
 						<td class="text-center"><%= z.price %></td>
 						<td class="text-center"><%= z.orders.count %></td>
-						<td class="text-center"><%= link_to "Ver", zone_path(z), :class => "btn btn-success", :method => "get" %> | <%= link_to "Editar", edit_zone_path(z), :class => "btn btn-info", :method => "get" %> | <%= link_to "Eliminar", zone_path(z), :class => "btn btn-danger", :method => "delete" %></td>
+						<td class="text-center"><%= link_to "Ver", zone_path(z), :class => "btn btn-success", :method => "get" %></td>
 					</tr>
 					<% end %>
 				</tbody>
