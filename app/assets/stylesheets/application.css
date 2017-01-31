@@ -15,4 +15,5 @@
  *= require_self
  *= require bootstrap
  *= require style
+ *= require bootstrap-select
  */

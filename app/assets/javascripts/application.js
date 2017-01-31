@@ -17,5 +17,6 @@
 //= require retina
 //= require underscore
 //= require ie10-viewport-bug-workaround
+//= require bootstrap-select
 
 //= require_tree .

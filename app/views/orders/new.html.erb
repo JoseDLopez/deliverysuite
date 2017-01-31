@@ -1,2 +1,186 @@
-<h1>Orders#new</h1>
-<p>Find me in app/views/orders/new.html.erb</p>
+<div class="container">
+	<div class="row">
+		<div class="col-xs-6 col-xs-offset-3">
+		
+			<div class="panel panel-default">
+				<h2 class="text-center">Nueva Orden</h2>
+			</div>
+		</div>
+	</div>
+
+	<div class="row">
+		<div class="col-md-12">
+
+			<div class="panel panel-default">
+				<div class="panel-heading">
+					<h4 class="text-center">Datos Cliente</h4>
+				</div>
+			</div>
+
+			<div class="col-md-4">
+				<form>
+					<div class="form-group">
+						<label for="client_input_phone">Número Telefónico:</label>
+						<input type="tel" class="form-control" id="client_input_phone" placeholder="+56912345678">
+					</div>
+					<div class="form-group">
+						<label for="client_input_name">Nombres:</label>
+						<input type="text" class="form-control" id="client_input_name" placeholder="Carlos">
+					</div>
+					<div class="form-group">
+						<label for="client_input_lastname">Apellidos:</label>
+						<input type="text" class="form-control" id="client_input_lastname" placeholder="Delgado">
+					</div>
+					<div class="form-group">
+						<label for="client_input_email">Correo:</label>
+						<input type="email" class="form-control" id="client_input_email" placeholder="example@correo.com">
+					</div>
+					<div class="form-group">
+						<label for="client_input_rut">RUT:</label>
+						<input type="text" class="form-control" id="client_input_rut" placeholder="15.583.192-K">
+					</div>
+					<div class="form-group">
+						<label for="client_input_remark">Observaciones:</label>
+						<input type="text" class="form-control" id="client_input_remark" placeholder="Cerca de...">
+					</div>
+				</form>				
+			</div>
+
+			<div class="col-md-8">
+				<form>
+					<div class="form-group">
+						<label for="client_input_address">Dirección:</label>
+						<input type="text" class="form-control" id="client_input_address" placeholder="Av. Matta 234, Santiago Centro, Chile">
+					</div>
+				</form>
+				<div id="new_client_map" style='height: 300px;'></div>
+				<br>
+				<button type="submit" class="btn btn-success">Crear Cliente</button>
+				<button type="submit" class="btn btn-primary">Actualizar Cliente</button>
+			</div>
+
+		</div>
+	</div>
+
+	<div class="row">
+		<div class="col-md-6">
+			<div class="panel panel-default">
+				<div class="panel-heading">
+					<h4 class="text-center">Seleccionar Productos</h4>
+				</div>
+			</div>
+			<label> Buscar por Categoría:
+				<select class="selectpicker" data-live-search="true">
+					<option data-tokens="">-- Todos --</option>
+					<% @categories.order(:name).each do |cat| %>
+						<option data-tokens="<%= cat.name %>"><%= cat.name %>: <%= cat.description %></option>
+					<% end %>
+				</select>
+			</label>
+
+
+			<table class="table table-hover table-sm" id="products_list_table">
+			  <thead id="products_list_table_head">
+			    <tr>
+			      <th>Nombre</th>
+			      <th>Descripción</th>
+			      <th>Precio</th>
+			      <th>Referencia</th>
+			      <th>Acción</th>
+			    </tr>
+			  </thead>
+			  <tbody id="products_list_table_body">
+				<% @products.order(:name).each do |pro| %>
+					<tr>
+						<td><%= pro.name %></td>
+						<td><%= pro.description %></td>
+						<td><%= pro.price %></td>
+						<td><img class="img-responsive" src="<%= pro.picture %>" alt="" style="height: 50px;"></td>
+						<td>
+							<%= link_to products_path, class: "button" do %>
+								<i class="glyphicon glyphicon-minus"></i>
+							<% end %> ||
+							<%= link_to products_path, class: "button" do %>
+								<i class="glyphicon glyphicon-plus"></i>
+							<% end %>
+						</td>
+					</tr>
+				<% end %>
+			  </tbody>
+			</table>
+
+		</div>
+
+		<div class="col-md-6">
+			<div class="panel panel-default">
+				<div class="panel-heading">
+					<h4 class="text-center">Resumen</h4>
+				</div>
+			</div>
+			<table class="table table-hover table-sm" id="order_products_table">
+			  <thead id="order_products_table_head">
+			    <tr>
+			      <th>#</th>
+			      <th>Nombre</th>
+			      <th>Cantidad</th>
+			      <th>Monto Unidad</th>
+			      <th>Subtotal</th>
+			      <th>Acción</th>
+			    </tr>
+			  </thead>
+			  <tbody id="order_products_table_body">
+			    <tr>
+			      <th scope="row">1</th>
+			      <td>Mark</td>
+			      <td>Otto</td>
+			      <td>@mdo</td>
+			      <td>@mdo</td>
+			      <td class="text-center">
+			      	<%= link_to products_path, class: "button btn-danger" do %>
+						<i class="glyphicon glyphicon-remove"></i>
+					<% end %>
+			      </td>
+			    </tr>
+			  </tbody>
+			</table>
+			<button type="submit" class="btn btn-warning">Crear Orden</button>
+		</div>
+	</div>
+</div>
+
+
+
+
+
+
+<script>
+	document.addEventListener("turbolinks:load",function(){
+
+	if ($("#new_client_map").length > 0){
+
+		$.getScript("//maps.google.com/maps/api/js?key=AIzaSyCp5ZLMmxEH6dtxWB8Ni20RWLMZIDuthsE").success(function(){
+
+			$.getScript("//cdn.rawgit.com/mahnunchik/markerclustererplus/master/dist/markerclusterer.min.js").success(function(){
+
+				$.getScript("//cdn.rawgit.com/printercu/google-maps-utility-library-v3-read-only/master/infobox/src/infobox_packed.js").success(function(){
+					initMap();
+					
+
+					function initMap(){
+						var infoWindow;
+
+						var mapita = new google.maps.Map(document.getElementById('new_client_map'), {
+							zoom: 13,
+							center: {lat: -33.453703, lng: -70.633799}
+						});
+
+					}
+
+				});
+
+			});
+
+		});
+	}
+});
+</script>
