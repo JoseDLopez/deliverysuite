@@ -21,7 +21,7 @@
 				<form>
 					<div class="form-group">
 						<label for="client_input_phone">Número Telefónico:</label>
-						<input type="tel" class="form-control" id="client_input_phone" placeholder="+56912345678">
+						<input type="tel" class="form-control" id="client_input_phone" placeholder="056912345678">
 					</div>
 					<div class="form-group">
 						<label for="client_input_name">Nombres:</label>
@@ -53,11 +53,12 @@
 						<input type="text" class="form-control" id="client_input_address" placeholder="Av. Matta 234, Santiago Centro, Chile">
 					</div>
 				</form>
+				<label id="latitudelabel"></label> | <label id="longitudelabel"></label>
 				<div id="new_client_map" style='height: 300px;'></div>
 				<br>
-				<button type="submit" class="btn btn-success">Crear Cliente</button>
-				<button type="submit" class="btn btn-primary">Actualizar Cliente</button>
-				<%= noticeclient %>
+				<button type="submit" class="btn btn-success" id="create_client_button">Crear Cliente</button>
+				<button type="submit" class="btn btn-primary" id="update_client_button">Actualizar Cliente</button>
+				<%= notice %>
 			</div>
 
 		</div>
@@ -157,25 +158,189 @@
 <script>
 	document.addEventListener("turbolinks:load",function(){
 
+	// INICIALIZAR
+	var mapita;
+	$("#create_client_button").prop('disabled', true);
+	$("#update_client_button").prop('disabled', true);
+	// $("#client_input_phone").val("056");
+
+	// SCRIPT PARA LOS MAPAS /////////////////////////////
 	if ($("#new_client_map").length > 0){
 
-		$.getScript("//maps.google.com/maps/api/js?key=AIzaSyCp5ZLMmxEH6dtxWB8Ni20RWLMZIDuthsE").success(function(){
+		$.getScript("//maps.google.com/maps/api/js?key=AIzaSyCp5ZLMmxEH6dtxWB8Ni20RWLMZIDuthsE&libraries=geometry").success(function(){
+
 
 			$.getScript("//cdn.rawgit.com/mahnunchik/markerclustererplus/master/dist/markerclusterer.min.js").success(function(){
 
 				$.getScript("//cdn.rawgit.com/printercu/google-maps-utility-library-v3-read-only/master/infobox/src/infobox_packed.js").success(function(){
 					initMap();
-					
 
 					function initMap(){
-						var infoWindow;
-
-						var mapita = new google.maps.Map(document.getElementById('new_client_map'), {
+						mapita = new google.maps.Map(document.getElementById('new_client_map'), {
 							zoom: 13,
 							center: {lat: -33.453703, lng: -70.633799}
 						});
+					}
+
+					// SCRIPT PARA LOS CALLBACKS /////////////////////////////
+					$("#client_input_phone").keypress(function(e) {
+					    if(e.which == 13) {
+					        searchClientByNumber($("#client_input_phone").val());
+					    }
+					});
+
+
+					// SCRIPT PARA LAS FUNCIONES ////////////////////////////////
+					function searchClientByNumber(numero){
+						if ((numero.charAt(0)=="0") && (numero.length == 12)){
+							$.post('/checknumber?phone='+numero,function(data){
+								if (data.client_exist == true){
+									loadClientInfo(data.client[0]);
+								}else{
+									$("#create_client_button").prop('disabled', false);
+									$("#update_client_button").prop('disabled', true);
+									alert("Es un cliente nuevo");
+								}
+							});
+						}
+					}
+
+					function loadClientInfo(cliente){
+						$("#create_client_button").prop('disabled', true);
+						$("#update_client_button").prop('disabled', false);
+						$("#client_input_name").val(cliente.name);
+						$("#client_input_lastname").val(cliente.lastname);
+						$("#client_input_email").val(cliente.email);
+						$("#client_input_rut").val(cliente.rut);
+						$("#client_input_remark").val(cliente.remark);
+						$("#client_input_address").val(cliente.address);
+						$("#latitudelabel").html(cliente.latitude);
+						$("#longitudelabel").html(cliente.longitude);
+
+						setClientMarker(cliente.latitude,cliente.longitude);
+					}
+
+					function setClientMarker(lati,long){
+						initMap();
+						var myLatLng = {lat: lati, lng: long};
+						var marker = new google.maps.Marker({
+						    position: myLatLng,
+						    map: mapita
+						  });
+						mapita.setCenter(marker.getPosition());
+						var estaen = {};
+						var poligono;
+						var curPosition = new google.maps.LatLng(lati,long);
+						zonas = <%= raw @zones.to_json %>;
+						zonas.forEach(function(zona){
+							var todraw = getPointsArray(zona.dots);
+							drawPolygon(todraw, zona.name, zona.price, zona.id);
+
+							if (google.maps.geometry.poly.containsLocation(curPosition, poligono) == true){
+								if (estaen.length > 0){
+									if (estaen.price > zona.price){
+										estaen = zona;
+									}
+								}else{
+									estaen = zona;	
+								}
+							}
+							// console.log(todraw);
+							// console.log(myLatLng);
+						})
+						console.log(estaen);
+
+
+						function getPointsArray(recibido){
+											var arraypuntos = [];
+											var puntos = recibido;
+											if (puntos == null){
+												return;
+											}
+											var corarr =[];
+											var cadena ="";
+											var estado ="";
+
+											var olat = 0;
+											var olon = 0;
+
+											var objeto ={};
+
+											for (var i = 0; i < puntos.length; i++){
+												var guardar = false;
+												if (puntos[i] == "("){
+													estado = "iniciolatitude";
+													guardar = false;
+												}
+
+												if (puntos[i] == ","){
+													estado = "iniciolongitude";
+													if (cadena.length > 0){	
+														corarr.push(cadena);
+													}
+													cadena="";
+													guardar = false;
+												}
+
+												if (puntos[i] == ")"){
+													estado = "fin";
+													corarr.push(cadena);
+													
+													cadena="";
+													guardar = false;
+
+													olat = parseFloat(corarr[0]);
+													olon = parseFloat(corarr[1]);
+													corarr = [];
+
+													// objeto = new google.maps.LatLng(olat,olon); 
+													objeto = {lat: olat, lng: olon};
+													arraypuntos.push(objeto);
+													objeto={};
+													estado=""
+
+												}
+
+												if ((puntos[i] != "(") & (puntos[i] != ",") & (puntos[i] != ")") & (puntos[i] != " ")){
+													guardar = true;
+												}
+
+												if (guardar == true){
+													cadena += puntos[i];
+												}
+											}
+
+											puntos = arraypuntos;
+											return puntos;
+						}
+
+						function drawPolygon(obj,name,price,zoneid){
+					        poligono = new google.maps.Polygon({
+					          paths: obj,
+					          strokeColor: '#FF0000',
+					          strokeOpacity: 0.8,
+					          strokeWeight: 2,
+					          fillColor: '#FF0000',
+					          fillOpacity: 0.35
+					        });
+					        poligono.setMap(mapita);
+							infoWindow = new google.maps.InfoWindow;
+							poligono.addListener('click', function(e){
+								infoWindow.setContent('<b>Nombre: '+ name +'</b><br>'+'Precio: '+price+'</br><br>'+'Ver: '+ '<a href="/zones/'+zoneid+'">Enlace</a>' + '</br>');
+								infoWindow.setPosition(e.latLng);
+
+								infoWindow.open(mapita);
+							});
+						}
+
 
 					}
+
+
+
+
+
+
 
 				});
 
@@ -183,5 +348,13 @@
 
 		});
 	}
+
+
+
+
+
+
+
+
 });
 </script>

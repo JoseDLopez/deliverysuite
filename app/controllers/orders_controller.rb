@@ -14,6 +14,8 @@ class OrdersController < ApplicationController
     @order = Order.new
     @categories = Category.all
     @products = Product.all
+    @clients = Client.all
+    @zones = Zone.all
   end
 
   def show
@@ -26,6 +28,24 @@ class OrdersController < ApplicationController
     @order = Order.find(params[:id])
   end
 
+  def checknumber
+    number = params[:phone]
+    client = Client.where("phone = ?", number)
+    # @client = Client.search(params[:phone])
+    respond_to do |format|
+       format.json {render :json => {client_exist: client.present?, client: client}}
+    end
+  end
+
+# def check_user
+#   user = params[:fieldValue]
+#   user = User.where("username = ?", username).first
+#   if user.present?
+#     render :json =>  ["free-user", false , "This User is already taken"]
+#   else
+#     render :json =>  ["free-user", true , ""]
+#   end
+# end
 
 
    private

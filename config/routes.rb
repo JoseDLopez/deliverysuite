@@ -12,6 +12,7 @@ Rails.application.routes.draw do
   get 'pages/livemap'
   root 'pages#home'
   get '/products/remove_category' => 'products#remove_category', :as => :remove_category
+  post '/checknumber', to: 'orders#checknumber'
 
   resources :orders, only: [:create, :new, :index]
   resources :payments, only: [:index]
