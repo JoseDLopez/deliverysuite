@@ -18,10 +18,10 @@
 			</div>
 
 			<div class="col-md-4">
-				<form>
+				<form class="client_form">
 					<div class="form-group">
 						<label for="client_input_phone">Número Telefónico:</label>
-						<input type="tel" class="form-control" id="client_input_phone" placeholder="056912345678">
+						<input type="tel" class="form-control" id="client_input_phone" placeholder="0056912345678">
 					</div>
 					<div class="form-group">
 						<label for="client_input_name">Nombres:</label>
@@ -47,7 +47,7 @@
 			</div>
 
 			<div class="col-md-8">
-				<form>
+				<form class="client_form">
 					<div class="form-group">
 						<label for="client_input_address">Dirección:</label>
 						<input type="text" class="form-control" id="client_input_address" placeholder="Av. Matta 234, Santiago Centro, Chile">
@@ -162,6 +162,9 @@
 	var mapita;
 	$("#create_client_button").prop('disabled', true);
 	$("#update_client_button").prop('disabled', true);
+	$(".client_form").submit(function(e) {
+		e.preventDefault();
+	});
 	// $("#client_input_phone").val("056");
 
 	// SCRIPT PARA LOS MAPAS /////////////////////////////
@@ -173,6 +176,7 @@
 			$.getScript("//cdn.rawgit.com/mahnunchik/markerclustererplus/master/dist/markerclusterer.min.js").success(function(){
 
 				$.getScript("//cdn.rawgit.com/printercu/google-maps-utility-library-v3-read-only/master/infobox/src/infobox_packed.js").success(function(){
+					var created_elements = [];
 					initMap();
 
 					function initMap(){
@@ -189,16 +193,97 @@
 					    }
 					});
 
+					$("#client_input_address").keypress(function(e) {
+					    if(e.which == 13) {
+					        loadMarkerIntoMap($("#client_input_address").val());
+					    }
+					});
+
+					mapita.addListener("rightclick", function(evt) {
+
+						if (confirm('¿Estas seguro de que quieres cambiar la ubicación del usuario?')) {
+							alert("Nueva ubicación de usuario");
+							var mylatlang = evt.latLng;
+							var lati = mylatlang.lat();
+							var long = mylatlang.lng();
+							$("#client_latitude").val(lati);
+							$("#client_longitude").val(long);
+							setClientMarker(lati,long);
+							loadAddressIntoInputField(lati,long);
+						}
+
+
+
+					});
+
 
 					// SCRIPT PARA LAS FUNCIONES ////////////////////////////////
+					function clearMapBefore(){
+						for (var i = 0; i < created_elements.length; i++) {
+							created_elements[i].setMap(null);
+						}
+						created_elements =[];
+					}
+
+					function clearInputClientFields(){
+						$("#client_input_name").val("");
+						$("#client_input_lastname").val("");
+						$("#client_input_email").val("");
+						$("#client_input_rut").val("");
+						$("#client_input_remark").val("");
+						$("#client_input_address").val("");
+						$("#latitudelabel").html("");
+						$("#longitudelabel").html("");
+						clearMapBefore();
+					}
+
+					function loadAddressIntoInputField(lati,long){
+						var latilong = new google.maps.LatLng(lati,long);
+						var geocoder = new google.maps.Geocoder;
+
+						geocoder.geocode({'location':latilong},function(results, status){
+							if (status === 'OK'){
+								if (results[0]){
+									$("#client_input_address").val(results[0].formatted_address);
+								}else{
+									window.alert("No se encuentran direcciones con esas coordenadas");
+								}
+							}else{
+								window.alert('Geocoder failed due to: ' + status);
+							}
+						});
+					}
+
+					function loadMarkerIntoMap(string){
+						var geocoder = new google.maps.Geocoder;
+						geocoder.geocode( { 'address': string}, function(results, status) {
+						  if (status == 'OK') {
+						    mapita.setCenter(results[0].geometry.location);
+						    var marker = new google.maps.Marker({
+						        map: mapita,
+						        position: results[0].geometry.location
+						    });
+						    created_elements.push(marker);
+							var latitu = marker.getPosition().lat();
+							var longit = marker.getPosition().lng();
+							setClientMarker(latitu,longit);
+						    mapita.setCenter(results[0].geometry.location);
+						  } else {
+						    alert('Error estableciendo el marcador' + status);
+						  }
+						});
+					}
+
+
 					function searchClientByNumber(numero){
-						if ((numero.charAt(0)=="0") && (numero.length == 12)){
+						if ((numero.charAt(0)=="0") && (numero.length == 13)){
 							$.post('/checknumber?phone='+numero,function(data){
 								if (data.client_exist == true){
 									loadClientInfo(data.client[0]);
 								}else{
 									$("#create_client_button").prop('disabled', false);
 									$("#update_client_button").prop('disabled', true);
+									clearInputClientFields();
 									alert("Es un cliente nuevo");
 								}
 							});
@@ -216,17 +301,17 @@
 						$("#client_input_address").val(cliente.address);
 						$("#latitudelabel").html(cliente.latitude);
 						$("#longitudelabel").html(cliente.longitude);
-
 						setClientMarker(cliente.latitude,cliente.longitude);
 					}
 
 					function setClientMarker(lati,long){
-						initMap();
+						clearMapBefore();
 						var myLatLng = {lat: lati, lng: long};
 						var marker = new google.maps.Marker({
 						    position: myLatLng,
 						    map: mapita
 						  });
+						created_elements.push(marker);
 						mapita.setCenter(marker.getPosition());
 						var estaen = {};
 						var poligono;
@@ -245,8 +330,6 @@
 									estaen = zona;	
 								}
 							}
-							// console.log(todraw);
-							// console.log(myLatLng);
 						})
 						console.log(estaen);
 
@@ -323,6 +406,7 @@
 					          fillColor: '#FF0000',
 					          fillOpacity: 0.35
 					        });
+					        created_elements.push(poligono);
 					        poligono.setMap(mapita);
 							infoWindow = new google.maps.InfoWindow;
 							poligono.addListener('click', function(e){
@@ -332,8 +416,6 @@
 								infoWindow.open(mapita);
 							});
 						}
-
-
 					}
 
 
