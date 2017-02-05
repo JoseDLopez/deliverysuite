@@ -16,6 +16,7 @@ class OrdersController < ApplicationController
     @products = Product.all
     @clients = Client.all
     @zones = Zone.all
+    @client = Client.new
   end
 
   def show

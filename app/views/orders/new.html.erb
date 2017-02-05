@@ -17,49 +17,49 @@
 				</div>
 			</div>
 
-			<div class="col-md-4">
-				<form class="client_form">
-					<div class="form-group">
-						<label for="client_input_phone">Número Telefónico:</label>
-						<input type="tel" class="form-control" id="client_input_phone" placeholder="0056912345678">
-					</div>
-					<div class="form-group">
-						<label for="client_input_name">Nombres:</label>
-						<input type="text" class="form-control" id="client_input_name" placeholder="Carlos">
-					</div>
-					<div class="form-group">
-						<label for="client_input_lastname">Apellidos:</label>
-						<input type="text" class="form-control" id="client_input_lastname" placeholder="Delgado">
-					</div>
-					<div class="form-group">
-						<label for="client_input_email">Correo:</label>
-						<input type="email" class="form-control" id="client_input_email" placeholder="example@correo.com">
-					</div>
-					<div class="form-group">
-						<label for="client_input_rut">RUT:</label>
-						<input type="text" class="form-control" id="client_input_rut" placeholder="15.583.192-K">
-					</div>
-					<div class="form-group">
-						<label for="client_input_remark">Observaciones:</label>
-						<input type="text" class="form-control" id="client_input_remark" placeholder="Cerca de...">
-					</div>
-				</form>				
-			</div>
 
-			<div class="col-md-8">
-				<form class="client_form">
+			<%= form_for(@client, remote: true, html: {class: "client_form"}) do |c| %>
+				<div class="col-md-4">
+						<div class="form-group">
+							<%= c.label :phone, "Numero Telefónico" %>
+							<%= c.telephone_field :phone, autofocus: true, class: 'form-control', placeholder: "0056912345678" %>
+						</div>
+						<div class="form-group">
+							<%= c.label :name, "Nombres" %>
+							<%= c.text_field :name, autofocus: true, class: 'form-control', placeholder: "Carlos Javier" %>
+						</div>
+						<div class="form-group">
+							<%= c.label :lastname, "Apellidos" %>
+							<%= c.text_field :lastname, autofocus: true, class: 'form-control', placeholder: "Perez Santana" %>
+						</div>
+						<div class="form-group">
+							<%= c.label :email, "Correo:" %>
+							<%= c.email_field :email, autofocus: true, class: 'form-control', placeholder: "example@correo.com" %>
+						</div>
+						<div class="form-group">
+							<%= c.label :rut, "RUT" %>
+							<%= c.text_field :rut, autofocus: true, class: 'form-control', placeholder: "15.583.192-K" %>
+						</div>
+						<div class="form-group">
+							<%= c.label :remark, "Observaciones" %>
+							<%= c.text_field :remark, autofocus: true, class: 'form-control', placeholder: "Se encuentra cerca de..." %>
+						</div>				
+				</div>
+
+				<div class="col-md-8">
 					<div class="form-group">
-						<label for="client_input_address">Dirección:</label>
-						<input type="text" class="form-control" id="client_input_address" placeholder="Av. Matta 234, Santiago Centro, Chile">
+						<%= c.label :address, "Dirección" %>
+						<%= c.text_field :address, autofocus: true, class: 'form-control', placeholder: "Av. Matta 234, Santiago Centro, Chile" %>
 					</div>
-				</form>
-				<label id="latitudelabel"></label> | <label id="longitudelabel"></label>
-				<div id="new_client_map" style='height: 300px;'></div>
-				<br>
-				<button type="submit" class="btn btn-success" id="create_client_button">Crear Cliente</button>
-				<button type="submit" class="btn btn-primary" id="update_client_button">Actualizar Cliente</button>
-				<%= notice %>
-			</div>
+					<label id="latitudelabel"></label> | <label id="longitudelabel"></label>
+					<div id="new_client_map" style='height: 300px;'></div>
+					<br>
+					<div class="actions text-center">
+						<%= c.submit "Crear/Actualizar Cliente", class: 'btn btn-success btn-lg', id: "create_client_button" %>
+						<%= @client.errors.full_messages.first if @client.errors.any? %>
+					</div>
+				</div>
+			<% end %>
 
 		</div>
 	</div>
@@ -154,18 +154,12 @@
 
 
 
-
 <script>
 	document.addEventListener("turbolinks:load",function(){
 
 	// INICIALIZAR
 	var mapita;
-	$("#create_client_button").prop('disabled', true);
-	$("#update_client_button").prop('disabled', true);
-	$(".client_form").submit(function(e) {
-		e.preventDefault();
-	});
-	// $("#client_input_phone").val("056");
+	
 
 	// SCRIPT PARA LOS MAPAS /////////////////////////////
 	if ($("#new_client_map").length > 0){
@@ -187,18 +181,27 @@
 					}
 
 					// SCRIPT PARA LOS CALLBACKS /////////////////////////////
-					$("#client_input_phone").keypress(function(e) {
+					$("#client_phone").keypress(function(e) {
 					    if(e.which == 13) {
-					        searchClientByNumber($("#client_input_phone").val());
+					        searchClientByNumber($("#client_phone").val());
 					    }
 					});
 
-					$("#client_input_address").keypress(function(e) {
+					$("#client_address").keypress(function(e) {
 					    if(e.which == 13) {
-					        loadMarkerIntoMap($("#client_input_address").val());
+					        loadMarkerIntoMap($("#client_address").val());
+					    }
+					});
+					$("form").keypress(function (e) {
+					    if (e.which == 13) {
+					        return false;
 					    }
 					});
 
+					
+					// $("#new_client").submit(function(e) {
+					// 	e.preventDefault();
+					// });
 					mapita.addListener("rightclick", function(evt) {
 
 						if (confirm('¿Estas seguro de que quieres cambiar la ubicación del usuario?')) {
@@ -211,13 +214,11 @@
 							setClientMarker(lati,long);
 							loadAddressIntoInputField(lati,long);
 						}
-
-
-
 					});
 
 
-					// SCRIPT PARA LAS FUNCIONES ////////////////////////////////
+					
+// SCRIPT PARA LAS FUNCIONES ////////////////////////////////
 					function clearMapBefore(){
 						for (var i = 0; i < created_elements.length; i++) {
 							created_elements[i].setMap(null);
@@ -226,12 +227,12 @@
 					}
 
 					function clearInputClientFields(){
-						$("#client_input_name").val("");
-						$("#client_input_lastname").val("");
-						$("#client_input_email").val("");
-						$("#client_input_rut").val("");
-						$("#client_input_remark").val("");
-						$("#client_input_address").val("");
+						$("#client_name").val("");
+						$("#client_lastname").val("");
+						$("#client_email").val("");
+						$("#client_rut").val("");
+						$("#client_remark").val("");
+						$("#client_address").val("");
 						$("#latitudelabel").html("");
 						$("#longitudelabel").html("");
 						clearMapBefore();
@@ -244,7 +245,7 @@
 						geocoder.geocode({'location':latilong},function(results, status){
 							if (status === 'OK'){
 								if (results[0]){
-									$("#client_input_address").val(results[0].formatted_address);
+									$("#client_address").val(results[0].formatted_address);
 								}else{
 									window.alert("No se encuentran direcciones con esas coordenadas");
 								}
@@ -281,8 +282,6 @@
 								if (data.client_exist == true){
 									loadClientInfo(data.client[0]);
 								}else{
-									$("#create_client_button").prop('disabled', false);
-									$("#update_client_button").prop('disabled', true);
 									clearInputClientFields();
 									alert("Es un cliente nuevo");
 								}
@@ -291,14 +290,12 @@
 					}
 
 					function loadClientInfo(cliente){
-						$("#create_client_button").prop('disabled', true);
-						$("#update_client_button").prop('disabled', false);
-						$("#client_input_name").val(cliente.name);
-						$("#client_input_lastname").val(cliente.lastname);
-						$("#client_input_email").val(cliente.email);
-						$("#client_input_rut").val(cliente.rut);
-						$("#client_input_remark").val(cliente.remark);
-						$("#client_input_address").val(cliente.address);
+						$("#client_name").val(cliente.name);
+						$("#client_lastname").val(cliente.lastname);
+						$("#client_email").val(cliente.email);
+						$("#client_rut").val(cliente.rut);
+						$("#client_remark").val(cliente.remark);
+						$("#client_address").val(cliente.address);
 						$("#latitudelabel").html(cliente.latitude);
 						$("#longitudelabel").html(cliente.longitude);
 						setClientMarker(cliente.latitude,cliente.longitude);
@@ -331,6 +328,8 @@
 								}
 							}
 						})
+						$("#latitudelabel").html(lati);
+						$("#longitudelabel").html(long);
 						console.log(estaen);
 
 
@@ -417,7 +416,6 @@
 							});
 						}
 					}
-
 
 
 
