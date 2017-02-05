@@ -1,0 +1,6 @@
+<% if @client.errors.any? %>
+	alert("<%= @client.errors.full_messages.first %>");
+<% else %>
+	alert("Cliente creado");
+	searchClientByNumber($("#client_phone").val());
+<% end %>
