@@ -17,49 +17,7 @@
 				</div>
 			</div>
 
-
-			<%= form_for(@client, remote: true, html: {class: "client_form"}) do |c| %>
-				<div class="col-md-4">
-						<div class="form-group">
-							<%= c.label :phone, "Numero Telefónico" %>
-							<%= c.telephone_field :phone, autofocus: true, class: 'form-control', placeholder: "0056912345678" %>
-						</div>
-						<div class="form-group">
-							<%= c.label :name, "Nombres" %>
-							<%= c.text_field :name, autofocus: true, class: 'form-control', placeholder: "Carlos Javier" %>
-						</div>
-						<div class="form-group">
-							<%= c.label :lastname, "Apellidos" %>
-							<%= c.text_field :lastname, autofocus: true, class: 'form-control', placeholder: "Perez Santana" %>
-						</div>
-						<div class="form-group">
-							<%= c.label :email, "Correo:" %>
-							<%= c.email_field :email, autofocus: true, class: 'form-control', placeholder: "example@correo.com" %>
-						</div>
-						<div class="form-group">
-							<%= c.label :rut, "RUT" %>
-							<%= c.text_field :rut, autofocus: true, class: 'form-control', placeholder: "15.583.192-K" %>
-						</div>
-						<div class="form-group">
-							<%= c.label :remark, "Observaciones" %>
-							<%= c.text_field :remark, autofocus: true, class: 'form-control', placeholder: "Se encuentra cerca de..." %>
-						</div>				
-				</div>
-
-				<div class="col-md-8">
-					<div class="form-group">
-						<%= c.label :address, "Dirección" %>
-						<%= c.text_field :address, autofocus: true, class: 'form-control', placeholder: "Av. Matta 234, Santiago Centro, Chile" %>
-					</div>
-					<label id="latitudelabel"></label> | <label id="longitudelabel"></label>
-					<div id="new_client_map" style='height: 300px;'></div>
-					<br>
-					<div class="actions text-center">
-						<%= c.submit "Crear/Actualizar Cliente", class: 'btn btn-success btn-lg', id: "create_client_button" %>
-						<%= @client.errors.full_messages.first if @client.errors.any? %>
-					</div>
-				</div>
-			<% end %>
+			<%= render @client %>
 
 		</div>
 	</div>
@@ -72,44 +30,39 @@
 				</div>
 			</div>
 			<label> Buscar por Categoría:
-				<select class="selectpicker" data-live-search="true">
-					<option data-tokens="">-- Todos --</option>
+				<select class="selectpicker" data-live-search="true" id="category_select_search_input">
+					<option data-tokens="" value="all">-- Todos --</option>
 					<% @categories.order(:name).each do |cat| %>
-						<option data-tokens="<%= cat.name %>"><%= cat.name %>: <%= cat.description %></option>
+						<option data-tokens="<%= cat.name %>" value="<%= cat.id %>"><%= cat.name %>: <%= cat.description %></option>
 					<% end %>
 				</select>
 			</label>
 
-
-			<table class="table table-hover table-sm" id="products_list_table">
-			  <thead id="products_list_table_head">
-			    <tr>
-			      <th>Nombre</th>
-			      <th>Descripción</th>
-			      <th>Precio</th>
-			      <th>Referencia</th>
-			      <th>Acción</th>
-			    </tr>
-			  </thead>
-			  <tbody id="products_list_table_body">
-				<% @products.order(:name).each do |pro| %>
-					<tr>
-						<td><%= pro.name %></td>
-						<td><%= pro.description %></td>
-						<td><%= pro.price %></td>
-						<td><img class="img-responsive" src="<%= pro.picture %>" alt="" style="height: 50px;"></td>
-						<td>
-							<%= link_to products_path, class: "button" do %>
-								<i class="glyphicon glyphicon-minus"></i>
-							<% end %> ||
-							<%= link_to products_path, class: "button" do %>
-								<i class="glyphicon glyphicon-plus"></i>
-							<% end %>
-						</td>
-					</tr>
-				<% end %>
-			  </tbody>
-			</table>
+			<div class="table-responsive">
+				<table class="table table-hover table-sm" id="products_list_table">
+				  <thead id="products_list_table_head">
+				    <tr>
+				      <th>Nombre</th>
+				      <th>Descripción</th>
+				      <th>Precio</th>
+				      <th>Referencia</th>
+				      <th>Acción</th>
+				    </tr>
+				  </thead>
+				  <tbody id="products_list_table_body">
+					<% @products.order(:name).each do |pro| %>
+						<tr>
+							<td><%= pro.name %></td>
+							<td><%= pro.description %></td>
+							<td><%= pro.price %></td>
+							<td><img class="img-responsive" src="<%= pro.picture %>" alt="" style="height: 50px;"></td>
+							<td><button onclick="deleteProductFromPreOrder('<%= pro.id %>');"><i class="glyphicon glyphicon-minus"></i></button>|<button onclick="addProductToPreOrder('<%= pro.id %>','<%= pro.name %>','<%= pro.price %>');"><i class="glyphicon glyphicon-plus"></i></button>
+							</td>
+						</tr>
+					<% end %>
+				  </tbody>
+				</table>
+			</div>
 
 		</div>
 
@@ -119,33 +72,45 @@
 					<h4 class="text-center">Resumen</h4>
 				</div>
 			</div>
-			<table class="table table-hover table-sm" id="order_products_table">
-			  <thead id="order_products_table_head">
-			    <tr>
-			      <th>#</th>
-			      <th>Nombre</th>
-			      <th>Cantidad</th>
-			      <th>Monto Unidad</th>
-			      <th>Subtotal</th>
-			      <th>Acción</th>
-			    </tr>
-			  </thead>
-			  <tbody id="order_products_table_body">
-			    <tr>
-			      <th scope="row">1</th>
-			      <td>Mark</td>
-			      <td>Otto</td>
-			      <td>@mdo</td>
-			      <td>@mdo</td>
-			      <td class="text-center">
-			      	<%= link_to products_path, class: "button btn-danger" do %>
-						<i class="glyphicon glyphicon-remove"></i>
-					<% end %>
-			      </td>
-			    </tr>
-			  </tbody>
-			</table>
-			<button type="submit" class="btn btn-warning">Crear Orden</button>
+			<div class="table-responsive">
+				<table class="table table-hover table-sm" id="order_products_table">
+				  <thead id="order_products_table_head">
+				    <tr>
+				      <th>#</th>
+				      <th>Nombre</th>
+				      <th>Cantidad</th>
+				      <th>Monto Unidad</th>
+				      <th>Subtotal</th>
+				      <th>Acción</th>
+				    </tr>
+				  </thead>
+				  <tbody id="order_products_table_body">
+				  </tbody>
+				</table>
+			</div>
+			<div id="check_out_order_space">
+				<h4 class="text-center">RESUME</h4>
+				<table class="table">
+					<thead>
+						<th class="text-center">Descripción</th>
+						<th class="text-center">Monto</th>
+					</thead>
+					<tbody>
+						<!-- On rows -->
+						<tr class="info" id = "products_amount">
+						</tr>
+						<tr class="warning" id = "zone_amount">
+						</tr>
+						<tr class="success" id = "total_amount">
+						</tr>
+					</tbody>
+				</table>
+				<div class="col-md-2 col-md-offset-4">
+					<button type="submit" class="btn btn-warning" onclick="processOrder();">Procesar Orden</button>
+				</div>
+				
+			</div>
+			
 		</div>
 	</div>
 </div>
@@ -155,6 +120,149 @@
 
 
 <script>
+
+// FUNCIONES FUERA DE JQUERY
+var preorderproducts =[];
+var zoneselected ={};
+var final_client_phone ="";
+
+function addProductToPreOrder(id,name,price){
+	var nuevo = true;
+
+	if (preorderproducts.length == 0){
+		preorderproducts.push({id: id,qty: 1, name: name, price: price});
+		nuevo = false;
+
+	}else {
+		preorderproducts.forEach(function(p){
+			if (p.id == id){
+				p.qty = p.qty + 1;
+				nuevo = false;
+			}
+		});
+	}
+
+	if (nuevo == true){
+		preorderproducts.push({id: id,qty: 1, name: name, price: price});
+	}
+
+	drawPreOrderList();
+}
+
+
+function deleteProductFromPreOrder(id){
+
+	if (preorderproducts.length == 0){
+	}else {
+		preorderproducts.forEach(function(p){
+			if (p.id == id){
+				p.qty = p.qty - 1;
+				if (p.qty == 0){
+					for(var i = 0; i < preorderproducts.length; i++) {
+					    if(preorderproducts[i].id == id) {
+					        preorderproducts.splice(i, 1);
+					        break;
+					    }
+					}
+				}
+			}
+		});
+	}
+
+	drawPreOrderList();
+}
+
+function removeWholeProductFromPreOrder(id){
+	for(var i = 0; i < preorderproducts.length; i++) {
+	    if(preorderproducts[i].id == id) {
+	        preorderproducts.splice(i, 1);
+	        break;
+	    }
+	}
+	drawPreOrderList();
+}
+
+function drawPreOrderList(){
+	console.log(preorderproducts);
+	$("#order_products_table_body").html("");
+	$("#products_amount").html("");
+	$("#zone_amount").html("");
+	$("#total_amount").html("");
+
+	var productstotal = 0;
+	var alltotal = 0;
+
+
+	preorderproducts.forEach(function (p,i){
+		price = parseInt(p.price);
+		if (p.price == ""){
+			price = 0;
+		}
+		var subtotal = parseInt(p.qty) * price;
+		price = price.toFixed(2).replace(/./g, function(c, i, a) {
+			return i && c !== "." && ((a.length - i) % 3 === 0) ? ',' + c : c;
+		});
+		
+		productstotal += subtotal;
+		subtotal = subtotal.toFixed(2).replace(/./g, function(c, i, a) {
+			return i && c !== "." && ((a.length - i) % 3 === 0) ? ',' + c : c;
+		});
+		
+
+		$("#order_products_table_body").append('<tr>');
+		$("#order_products_table_body").append('<td class="text-center">'+ (parseInt(i) + 1) +'</td>');
+		$("#order_products_table_body").append('<td class="text-center">'+ p.name +'</td>');
+		$("#order_products_table_body").append('<td class="text-center">'+ p.qty +'</td>');
+		$("#order_products_table_body").append('<td class="text-center">$'+ price +'</td>');
+		$("#order_products_table_body").append('<td class="text-center">$'+ subtotal +'</td>');
+		$("#order_products_table_body").append('<td class="text-center"><button onclick="removeWholeProductFromPreOrder('+p.id+');"><i class="glyphicon glyphicon-remove"></i></button></td>');
+		$("#order_products_table_body").append('</tr>');
+
+	});
+
+	var precioZona = parseInt(zoneselected.price);
+	if (zoneselected.price == null){
+		precioZona = 0;
+	}
+	alltotal = productstotal + precioZona;
+
+	alltotal = alltotal.toFixed(2).replace(/./g, function(c, i, a) {
+		return i && c !== "." && ((a.length - i) % 3 === 0) ? ',' + c : c;
+	});
+
+	productstotal = productstotal.toFixed(2).replace(/./g, function(c, i, a) {
+		return i && c !== "." && ((a.length - i) % 3 === 0) ? ',' + c : c;
+	});
+
+	precioZona = precioZona.toFixed(2).replace(/./g, function(c, i, a) {
+		return i && c !== "." && ((a.length - i) % 3 === 0) ? ',' + c : c;
+	});
+
+
+
+	$("#products_amount").append('<td class="text-center">Monto por productos seleccionados:</td>');
+	$("#products_amount").append('<td class="text-center">$'+ productstotal +'</td>');
+	$("#zone_amount").append('<td class="text-center">Monto zona de entrega:</td>');
+	$("#zone_amount").append('<td class="text-center">$'+ precioZona +'</td>');
+	$("#total_amount").append('<td class="text-center text-uppercase"><strong>Total a monto a pagar:</strong></td>');
+	$("#total_amount").append('<td class="text-center"><strong>$'+ alltotal +'</strong></td>');
+}
+
+function processOrder(){
+
+	if (final_client_phone == ""){
+		alert("Debes agregar un cliente a quien despachar");
+	}else {
+		$.post('/orders?zonaid='+zoneselected.id+'&phone='+final_client_phone+'&products='+JSON.stringify(preorderproducts),function(data){
+			console.log(data);
+		});
+	}
+
+
+
+}
+
+
 	document.addEventListener("turbolinks:load",function(){
 
 	// INICIALIZAR
@@ -181,6 +289,8 @@
 					}
 
 					// SCRIPT PARA LOS CALLBACKS /////////////////////////////
+					$("#create_client_button").prop('disabled', true);
+
 					$("#client_phone").keypress(function(e) {
 					    if(e.which == 13) {
 					        searchClientByNumber($("#client_phone").val());
@@ -196,6 +306,10 @@
 					    if (e.which == 13) {
 					        return false;
 					    }
+					});
+
+					$("#category_select_search_input").change(function() {
+						searchProductsFromCategory($("#category_select_search_input").val());
 					});
 
 					
@@ -218,7 +332,7 @@
 
 
 					
-// SCRIPT PARA LAS FUNCIONES ////////////////////////////////
+					// SCRIPT PARA LAS FUNCIONES ////////////////////////////////
 					function clearMapBefore(){
 						for (var i = 0; i < created_elements.length; i++) {
 							created_elements[i].setMap(null);
@@ -235,6 +349,7 @@
 						$("#client_address").val("");
 						$("#latitudelabel").html("");
 						$("#longitudelabel").html("");
+						final_client_phone ="";
 						clearMapBefore();
 					}
 
@@ -281,8 +396,10 @@
 							$.post('/checknumber?phone='+numero,function(data){
 								if (data.client_exist == true){
 									loadClientInfo(data.client[0]);
+									$("#create_client_button").prop('disabled', true);
 								}else{
 									clearInputClientFields();
+									$("#create_client_button").prop('disabled', false);
 									alert("Es un cliente nuevo");
 								}
 							});
@@ -298,6 +415,7 @@
 						$("#client_address").val(cliente.address);
 						$("#latitudelabel").html(cliente.latitude);
 						$("#longitudelabel").html(cliente.longitude);
+						final_client_phone = cliente.phone;
 						setClientMarker(cliente.latitude,cliente.longitude);
 					}
 
@@ -331,6 +449,8 @@
 						$("#latitudelabel").html(lati);
 						$("#longitudelabel").html(long);
 						console.log(estaen);
+						zoneselected = estaen;
+						drawPreOrderList();
 
 
 						function getPointsArray(recibido){
@@ -417,9 +537,33 @@
 						}
 					}
 
+					function searchProductsFromCategory(categoryid){
+						$.post('/get_category_products?category='+categoryid,function(data){
+							if (data.product_exist == true){
+								drawProductsFromCategory(data.category_products);
+							}else{
+								alert("no existen productos en la categoria seleccionada");
+							}
+						});
+					}
 
+					function drawProductsFromCategory(productos){
+						$("#products_list_table_body").html("");
 
-
+						productos.forEach(function (p){
+							var precio = 0;
+							if (p.price != null){
+								precio = p.price;
+							}
+							$("#products_list_table_body").append('<tr>');
+							$("#products_list_table_body").append('<td>'+ p.name +'</td>');
+							$("#products_list_table_body").append('<td>'+ p.description +'</td>');
+							$("#products_list_table_body").append('<td>'+ precio +'</td>');
+							$("#products_list_table_body").append('<td><img class="img-responsive" src="'+ p.picture.url +'" alt="" style="height: 50px;">');
+							$("#products_list_table_body").append('<td><button onclick="deleteProductFromPreOrder('+p.id+');"><i class="glyphicon glyphicon-minus"></i></button>|<button onclick="addProductToPreOrder('+p.id+',\''+p.name+'\','+p.price+');"><i class="glyphicon glyphicon-plus"></i></button></td>');
+							$("#products_list_table_body").append('</tr>');
+						});
+					}
 
 
 				});
@@ -437,4 +581,6 @@
 
 
 });
+
+
 </script>

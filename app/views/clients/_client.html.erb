@@ -1,0 +1,41 @@
+<%= form_for(@client, remote: true, html: {class: "client_form"}) do |c| %>
+	<div class="col-md-4">
+			<div class="form-group">
+				<%= c.label :phone, "Numero Telefónico" %>
+				<%= c.telephone_field :phone, autofocus: true, class: 'form-control', placeholder: "0056912345678" %>
+			</div>
+			<div class="form-group">
+				<%= c.label :name, "Nombres" %>
+				<%= c.text_field :name, autofocus: true, class: 'form-control', placeholder: "Carlos Javier" %>
+			</div>
+			<div class="form-group">
+				<%= c.label :lastname, "Apellidos" %>
+				<%= c.text_field :lastname, autofocus: true, class: 'form-control', placeholder: "Perez Santana" %>
+			</div>
+			<div class="form-group">
+				<%= c.label :email, "Correo:" %>
+				<%= c.email_field :email, autofocus: true, class: 'form-control', placeholder: "example@correo.com" %>
+			</div>
+			<div class="form-group">
+				<%= c.label :rut, "RUT" %>
+				<%= c.text_field :rut, autofocus: true, class: 'form-control', placeholder: "15.583.192-K" %>
+			</div>
+			<div class="form-group">
+				<%= c.label :remark, "Observaciones" %>
+				<%= c.text_field :remark, autofocus: true, class: 'form-control', placeholder: "Se encuentra cerca de..." %>
+			</div>				
+	</div>
+
+	<div class="col-md-8">
+		<div class="form-group">
+			<%= c.label :address, "Dirección" %>
+			<%= c.text_field :address, autofocus: true, class: 'form-control', placeholder: "Av. Matta 234, Santiago Centro, Chile" %>
+		</div>
+		<label id="latitudelabel"></label> | <label id="longitudelabel"></label>
+		<div id="new_client_map" style='height: 300px;'></div>
+		<br>
+		<div class="actions text-center">
+			<%= c.submit "Crear Cliente", class: 'btn btn-success btn-lg', id: "create_client_button" %>
+		</div>
+	</div>
+<% end %>

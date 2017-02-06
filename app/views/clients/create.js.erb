@@ -1,6 +1,23 @@
 <% if @client.errors.any? %>
 	alert("<%= @client.errors.full_messages.first %>");
+	$("#create_client_button").prop('disabled', false);
+	$("#update_client_button").prop('disabled', true);
 <% else %>
 	alert("Cliente creado");
 	searchClientByNumber($("#client_phone").val());
 <% end %>
+
+
+
+function searchClientByNumber(numero){
+	if ((numero.charAt(0)=="0") && (numero.length == 13)){
+		$.post('/checknumber?phone='+numero,function(data){
+			if (data.client_exist == true){
+				$("#create_client_button").prop('disabled', true);
+			}else{
+				$("#create_client_button").prop('disabled', false);
+				alert("Es un cliente nuevo");
+			}
+		});
+	}
+}

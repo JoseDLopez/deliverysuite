@@ -5,5 +5,5 @@ class Client < ApplicationRecord
 
 	validates :rut, rut: true
 	validates :name, :lastname, :phone, :address, presence: { message: "No deben existir campos vacíos" }
-	validates_uniqueness_of :rut, :message => "Ingresa RUT por favor" 
+	validates_uniqueness_of :rut, :phone, :message => "repetido" 
 end

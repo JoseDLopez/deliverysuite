@@ -3,11 +3,38 @@ class OrdersController < ApplicationController
 	before_action :set_order, only: [:show, :edit, :update]
 
   def index
-  	@orders = Order.all
+  	@orders = Order.all.order(created_at: :desc)
   end
 
   def create
-    @order = Order.new(order_params)
+    order = Order.new
+    zone = Zone.find(params[:zonaid])
+    number = params[:phone]
+    client = Client.find_by_phone(number)
+    total = zone.price.to_i
+    order[:zone_id] = zone.id
+    order[:client_id] = client.id
+    productos = JSON.parse(params[:products])
+    sumaprecioproductos = 0
+    productos.each do |p|
+      itera = p["qty"]
+      toadd = Product.find(p["id"])
+      while itera > 0  do
+        order.products << toadd
+        sumaprecioproductos += toadd.price.to_i
+
+         itera -= 1  
+      end
+    end
+
+    total += sumaprecioproductos
+    order[:total] = total
+
+
+    if order.save
+      redirect_to client_order_path(client,order), notice: 'Orden creada correctamente'
+    end
+
   end
 
   def new
@@ -20,6 +47,13 @@ class OrdersController < ApplicationController
   end
 
   def show
+    @order = Order.find(params[:id])
+    @totalproductos = 0
+    @productosdeorden = @order.products.order(:name)
+    @productosdeorden.each do |p|
+      @totalproductos += p.price
+    end
+    @orderstatus = 'new'
   end
 
   def edit
@@ -38,23 +72,27 @@ class OrdersController < ApplicationController
     end
   end
 
-# def check_user
-#   user = params[:fieldValue]
-#   user = User.where("username = ?", username).first
-#   if user.present?
-#     render :json =>  ["free-user", false , "This User is already taken"]
-#   else
-#     render :json =>  ["free-user", true , ""]
-#   end
-# end
+  def get_category_products
+    cat = params[:category]
+    if cat == "all"
+      productoscat = Product.all.order(:name)
+      respond_to do |format|
+         format.json {render :json => {product_exist: productoscat.present?, category_products: productoscat}}
+      end
+    else
+      category = Category.find(cat)
+      productoscat = category.products.order(:name)
+      respond_to do |format|
+         format.json {render :json => {product_exist: productoscat.present?, category_products: productoscat}}
+      end
+    end
+
+  end
+
 
 
    private
     def set_order
       @order = Order.find(params[:id])
     end
-
-    def order_params
-      params.require(:order).permit(:name, :description)
-    end 
 end

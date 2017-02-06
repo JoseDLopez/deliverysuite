@@ -13,6 +13,8 @@ Rails.application.routes.draw do
   root 'pages#home'
   get '/products/remove_category' => 'products#remove_category', :as => :remove_category
   post '/checknumber', to: 'orders#checknumber'
+  post '/get_category_products', to: 'orders#get_category_products'
+  # post '/create', to: 'orders#create'
 
   resources :orders, only: [:create, :new, :index]
   resources :payments, only: [:index]
@@ -23,7 +25,7 @@ Rails.application.routes.draw do
   
 
   resources :clients, only: [:index, :show, :create, :new] do
-  	resources :order, only: [:show] do
+  	resources :orders, only: [:show] do
       resources :payments, only: [:show, :create, :new]
     end
   end

@@ -34,7 +34,7 @@ ActiveAdmin.register_page "Dashboard" do
         panel "Ultimos Pedidos" do
           ul do
             Order.last(5).map do |o|
-              li link_to(o.client.name, admin_product_path(o))
+              li link_to(o.client.name, admin_order_path(o))
             end
           end
         end

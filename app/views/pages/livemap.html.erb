@@ -29,15 +29,25 @@
 							center: {lat: -33.453703, lng: -70.633799}
 						});
 						drawZones();
-						// drawOrders();
+						drawOrders();
 
 						function drawZones(){
 							zonas = <%= raw @zones.to_json %>;
 							zonas.forEach(function(zona){
 								var todraw = getPointsArray(zona.dots);
 								drawPolygon(todraw, zona.name, zona.price, zona.id);
-							})
+							});
 						}
+
+						function drawOrders(){
+							ordenes = <%= raw @hash.to_json %>;
+							ordenes.forEach(function(orden){
+								drawMarker(orden.lat,orden.lng,orden.marker_title);
+							});
+						}
+
+
+
 						function getPointsArray(recibido){
 							var arraypuntos = [];
 							var puntos = recibido;
@@ -118,6 +128,35 @@
 								infoWindow.open(mapita);
 							});
 						}
+
+						function drawMarker(lati,long,title){
+							var myLatLng = {lat: lati, lng: long};
+							var marker = new google.maps.Marker({
+							    position: myLatLng,
+							    map: mapita
+							  });
+							infoWindow = new google.maps.InfoWindow;
+							marker.addListener('click', function(e){
+								infoWindow.setContent('<b>Nombre: '+ title +'</b>');
+								infoWindow.setPosition(e.latLng);
+								infoWindow.open(mapita);
+							});
+
+						}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 					}
 
 
