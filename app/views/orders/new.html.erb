@@ -259,18 +259,21 @@ function processOrder(){
 	}
 }
 
-
+document.addEventListener("turbolinks:before-cache",function(){
+	$(".selectpicker").selectpicker('destroy').addClass('selectpicker');
+});
 
 	document.addEventListener("turbolinks:load",function(){
 
 	// INICIALIZAR
 	var mapita;
-	
+	$(".selectpicker").selectpicker();
 
 	// SCRIPT PARA LOS MAPAS /////////////////////////////
 	if ($("#new_client_map").length > 0){
 
 		$.getScript("//maps.google.com/maps/api/js?key=AIzaSyCp5ZLMmxEH6dtxWB8Ni20RWLMZIDuthsE&libraries=geometry").success(function(){
+			$('#category_select_search_input').selectpicker();
 
 
 			$.getScript("//cdn.rawgit.com/mahnunchik/markerclustererplus/master/dist/markerclusterer.min.js").success(function(){

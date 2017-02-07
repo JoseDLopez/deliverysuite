@@ -54,7 +54,18 @@
 
 
 <script>
-document.addEventListener("turbolinks:load",function() {
-  $("#order_status_search").selectpicker('refresh');
-}
+
+document.addEventListener("turbolinks:load",function(){
+	// if ($("#order_status_search").length > 0){
+	// 	$('#order_status_search').selectpicker();
+	// }
+	// $(this).trigger('load.bs.select.data-api');
+	$(".selectpicker").selectpicker();
+});
+
+document.addEventListener("turbolinks:before-cache",function(){
+	$(".selectpicker").selectpicker('destroy').addClass('selectpicker');
+});
+
+
 </script>
