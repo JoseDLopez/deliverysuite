@@ -7,7 +7,7 @@
 
 
 	<div class="row">
-		<div class="col-md-10 col-md-offset-1">
+		<div class="col-md-12">
 			<table class="table table-hover">
 				<thead>
 					<tr>
@@ -25,7 +25,7 @@
 						<td class="text-center"><%= c.name %></td>
 						<td class="text-center"><%= c.description %></td>
 						<td class="text-center"><%= c.products.count %></td>
-						<td class="text-center"><%= link_to "Ver", category_path(c), :class => "btn btn-success", :method => "get" %> | <%= link_to "Editar", edit_category_path(c), :class => "btn btn-info", :method => "get" %> | <%= link_to "Eliminar", category_path(c), :class => "btn btn-danger", :method => "delete" %></td>
+						<td class="text-center"><%= link_to "Ver", category_path(c), :class => "btn btn-success btn-sm", :method => "get" %>|<%= link_to "Editar", edit_category_path(c), :class => "btn btn-info btn-sm", :method => "get" %>|<%= link_to "Eliminar", category_path(c), :class => "btn btn-danger btn-sm", :method => "delete" %></td>
 					</tr>
 					<% end %>
 				</tbody>
