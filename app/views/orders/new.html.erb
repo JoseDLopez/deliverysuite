@@ -106,7 +106,7 @@
 					</tbody>
 				</table>
 				<div class="col-md-2 col-md-offset-4">
-					<button type="submit" class="btn btn-warning" onclick="processOrder();">Procesar Orden</button>
+					<button type="submit" class="btn btn-warning center-block" onclick="processOrder();">Procesar Orden</button>
 				</div>
 				
 			</div>
@@ -547,7 +547,7 @@ document.addEventListener("turbolinks:before-cache",function(){
 							if (data.product_exist == true){
 								drawProductsFromCategory(data.category_products);
 							}else{
-								alert("no existen productos en la categoria seleccionada");
+								console.log("no existen productos en la categoria seleccionada");
 							}
 						});
 					}

@@ -13,14 +13,14 @@
 	<div class="row">
 		<div class="col-md-8 col-md-offset-2">
 			<table class="table table-hover table-striped">
-				<thead>
+				<thead id="products_table_head">
 					<tr>
 					<th class="text-center">Numero de Orden</th>
 					<th class="text-center">Fecha</th>
 					<th class="text-center">Cliente</th>
 					<th class="text-center">Monto</th>
 					<th class="text-center">Estado</th>
-					<th class="text-center">Motorista</th>
+<!-- 					<th class="text-center">Motorista</th> -->
 					<th class="text-center">Detalle</th>
 					</tr>
 				</thead>
@@ -36,13 +36,6 @@
 									Pendiente
 								<% else %>
 									Pagado
-								<% end %>
-							</td>
-							<td class="text-center">
-								<% if (o.employees.first == nil) %>
-									N/A
-								<% else %>
-									o.employees.first.name
 								<% end %>
 							</td>
 							<td class="text-center">
@@ -68,10 +61,6 @@
 <script>
 
 document.addEventListener("turbolinks:load",function(){
-	// if ($("#order_status_search").length > 0){
-	// 	$('#order_status_search').selectpicker();
-	// }
-	// $(this).trigger('load.bs.select.data-api');
 	$(".selectpicker").selectpicker();
 
 	$("#order_status_search").change(function() {
@@ -79,10 +68,39 @@ document.addEventListener("turbolinks:load",function(){
 	});
 
 
+	function searchOrdersByStatus(estado){
+		$.post('/get_orders_by_status?status='+estado,function(data){
+			if (data.order_exist == true){
+				drawOrdersFromStatus(data.orders_status);
+			}else{
+			alert("no existen ordenes con el estado seleccionado");
+			}
+		});
+	}
+
+	function drawOrdersFromStatus(ordenes){
+		$("#products_table_body").html("");
+		$("#products_table_head").html("");
+
+		$("#products_table_head").append('<tr>');
+		$("#products_table_body").append('<th class="text-center">Numero de Orden</th>');
+		$("#products_table_body").append('<th class="text-center">Fecha</th>');
+		$("#products_table_body").append('<th class="text-center">Monto</th>');
+		$("#products_table_body").append('<th class="text-center">Detalle</th>');
+		$("#products_table_body").append('</tr>');
+
+	ordenes.forEach(function (o){
+		$("#products_table_body").append('<tr>');
+		$("#products_table_body").append('<td class="text-center">'+ o.id +'</td>');
+		$("#products_table_body").append('<td class="text-center">'+ o.created_at +'</td>');
+		$("#products_table_body").append('<td class="text-center">$'+ o.total +'</td>');
+		$("#products_table_body").append('<td class="text-center"><a href="'+'/clients/'+o.client_id+'/orders/'+o.id+'">Ver Detalle</a></td>');
+		$("#products_table_body").append('</tr>');
+	});
 
 
-	function searchOrdersByStatus(data){
-		alert("hola " + data)
+
+
 	}
 
 });

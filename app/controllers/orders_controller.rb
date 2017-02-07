@@ -48,6 +48,7 @@ class OrdersController < ApplicationController
 
   def show
     @order = Order.find(params[:id])
+    @client = @order.client
     @totalproductos = 0
     @productosdeorden = @order.products.order(:name)
     @productosdeorden.each do |p|
@@ -88,6 +89,47 @@ class OrdersController < ApplicationController
       respond_to do |format|
          format.json {render :json => {product_exist: productoscat.present?, category_products: productoscat}}
       end
+    end
+
+  end
+
+
+  def get_orders_by_status
+    stat = params[:status]
+    if stat == "all"
+
+      ordersstat = Order.all.order(created_at: :desc)
+      respond_to do |format|
+         format.json {render :json => {order_exist: ordersstat.present?, orders_status: ordersstat}}
+      end
+
+    elsif stat == "new"
+
+      ordenes = Order.all.order(created_at: :desc)
+      ordenestoshow = []
+      ordenes.each do |o|
+        if o.payment == nil
+          ordenestoshow.push(o)
+        end
+      end
+
+      respond_to do |format|
+         format.json {render :json => {order_exist: ordenestoshow.present?, orders_status: ordenestoshow}}
+      end
+
+    elsif stat == "paid"
+      ordenes = Order.all.order(created_at: :desc)
+      ordenestoshow = []
+      ordenes.each do |o|
+        if o.payment != nil
+          ordenestoshow.push(o)
+        end
+      end
+      
+      respond_to do |format|
+         format.json {render :json => {order_exist: ordenestoshow.present?, orders_status: ordenestoshow}}
+      end
+
     end
 
   end

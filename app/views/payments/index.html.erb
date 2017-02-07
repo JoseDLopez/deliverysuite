@@ -1,2 +1,38 @@
-<h1>Payments#index</h1>
-<p>Find me in app/views/payments/index.html.erb</p>
+<div class="container">
+	<div class="row">
+		<div class="col-md-12">
+			<h1 class="text-center">Listado de Pagos</h1>
+		</div>
+	</div>
+
+	<div class="row">
+		<div class="col-md-8 col-md-offset-2">
+			<table class="table table-hover table-striped">
+				<thead>
+					<tr>
+					<th class="text-center">Numero de Orden</th>
+					<th class="text-center">Fecha</th>
+					<th class="text-center">Cliente</th>
+					<th class="text-center">Monto</th>
+					<th class="text-center">Detalle</th>
+					</tr>
+				</thead>
+				<tbody id="products_table_body">
+					<% @payments.each do |p| %>
+						<tr>
+							<td class="text-center"><%= p.order.id %></td>
+							<td class="text-center"><%= p.created_at %></td>
+							<td class="text-center"><%= p.order.client.name %> <%= p.order.client.lastname %></td>
+							<td class="text-center">$<%= p.order.total %></td>
+							<td class="text-center">
+								<%= link_to client_order_path(p.order.client,p.order), class: "btn btn-info" do %>
+									<i class="glyphicon glyphicon-search"></i>
+								<% end %>
+							</td>
+						</tr>
+					<% end %>
+				</tbody>
+			</table>
+		</div>
+	</div>
+</div>

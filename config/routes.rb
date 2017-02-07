@@ -14,6 +14,7 @@ Rails.application.routes.draw do
   get '/products/remove_category' => 'products#remove_category', :as => :remove_category
   post '/checknumber', to: 'orders#checknumber'
   post '/get_category_products', to: 'orders#get_category_products'
+  post '/get_orders_by_status', to: 'orders#get_orders_by_status'
   # post '/create', to: 'orders#create'
 
   resources :orders, only: [:create, :new, :index]
