@@ -16,7 +16,7 @@
 					<h4 class="text-center">Datos Cliente</h4>
 				</div>
 			</div>
-
+			<button class="btn btn-info" id="searchClientButton"><i class="glyphicon glyphicon-search"></i></button>
 			<%= render @client %>
 
 		</div>
@@ -257,10 +257,8 @@ function processOrder(){
 			console.log(data);
 		});
 	}
-
-
-
 }
+
 
 
 	document.addEventListener("turbolinks:load",function(){
@@ -310,6 +308,10 @@ function processOrder(){
 
 					$("#category_select_search_input").change(function() {
 						searchProductsFromCategory($("#category_select_search_input").val());
+					});
+
+					$("#searchClientButton").on('click',function(){
+						searchClientByNumber($("#client_phone").val());
 					});
 
 					
