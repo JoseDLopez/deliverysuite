@@ -40,9 +40,10 @@
 						}
 
 						function drawOrders(){
-							ordenes = <%= raw @hash.to_json %>;
+							ordenes = <%= raw @clientes.to_json %>;
+							console.log(ordenes);
 							ordenes.forEach(function(orden){
-								drawMarker(orden.lat,orden.lng,orden.marker_title);
+								drawMarker(orden.latitude,orden.longitude,orden.name,orden.order,orden.client);
 							});
 						}
 
@@ -129,7 +130,7 @@
 							});
 						}
 
-						function drawMarker(lati,long,title){
+						function drawMarker(lati,long,title,orderid,clientid){
 							var myLatLng = {lat: lati, lng: long};
 							var marker = new google.maps.Marker({
 							    position: myLatLng,
@@ -137,7 +138,7 @@
 							  });
 							infoWindow = new google.maps.InfoWindow;
 							marker.addListener('click', function(e){
-								infoWindow.setContent('<b>Nombre: '+ title +'</b>');
+								infoWindow.setContent('<b>Nombre: '+ title +'</b><br>'+'Ver: '+ '<a href="/clients/'+clientid+'/orders/'+orderid+'">Enlace</a>' + '</br>');
 								infoWindow.setPosition(e.latLng);
 								infoWindow.open(mapita);
 							});
