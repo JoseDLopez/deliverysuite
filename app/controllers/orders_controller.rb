@@ -51,9 +51,12 @@ class OrdersController < ApplicationController
     @totalproductos = 0
     @productosdeorden = @order.products.order(:name)
     @productosdeorden.each do |p|
-      @totalproductos += p.price
+      precio = p.price
+      if p.price == nil
+        precio = 0
+      end
+      @totalproductos += precio
     end
-    @orderstatus = 'new'
   end
 
   def edit

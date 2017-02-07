@@ -4,8 +4,8 @@
 			<h1 class="text-center">Listado de Ordenes</h1>
 			<select class="selectpicker text-center" id="order_status_search">
 				<option value="all">-- Todos --</option>
-				<option value="all">Nuevo</option>
-				<option value="all">Pagado</option>
+				<option value="new">Nuevo</option>
+				<option value="paid">Pagado</option>
 			</select>
 		</div>
 	</div>
@@ -31,8 +31,20 @@
 							<td class="text-center"><%= o.created_at %></td>
 							<td class="text-center"><%= o.client.name %> <%= o.client.lastname %></td>
 							<td class="text-center">$<%= o.total %></td>
-							<td class="text-center"><%= o.total %></td>
-							<td class="text-center"><%= o.total %></td>
+							<td class="text-center">
+								<% if (o.payment == nil) %>
+									Pendiente
+								<% else %>
+									Pagado
+								<% end %>
+							</td>
+							<td class="text-center">
+								<% if (o.employees.first == nil) %>
+									N/A
+								<% else %>
+									o.employees.first.name
+								<% end %>
+							</td>
 							<td class="text-center">
 								<%= link_to client_order_path(o.client,o), class: "btn btn-info" do %>
 									<i class="glyphicon glyphicon-search"></i>
@@ -61,6 +73,18 @@ document.addEventListener("turbolinks:load",function(){
 	// }
 	// $(this).trigger('load.bs.select.data-api');
 	$(".selectpicker").selectpicker();
+
+	$("#order_status_search").change(function() {
+		searchOrdersByStatus($("#order_status_search").val());
+	});
+
+
+
+
+	function searchOrdersByStatus(data){
+		alert("hola " + data)
+	}
+
 });
 
 document.addEventListener("turbolinks:before-cache",function(){
